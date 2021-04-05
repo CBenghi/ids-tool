@@ -2,7 +2,7 @@
   "profiles": {
     "ids-tool": {
       "commandName": "Project",
-      "commandLineArgs": "check \"C:\\Data\\Dev\\BuildingSmart\\BCF-XML\\test cases\" -r v3.0 -q  "
+      "commandLineArgs": "check -x \"C:\\Data\\Dev\\BuildingSmart\\IDS\\Development\\Third production release\\ids.xsd\" -s \"C:\\Data\\Dev\\BuildingSmart\\IDS\\Development\\Third production release\"   "
     }
   }
 }

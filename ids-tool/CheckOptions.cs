@@ -1,16 +1,12 @@
 ﻿using CommandLine;
-using Force.Crc32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
-using System.Xml.XPath;
 using static idsTool.Program;
-using vbio = Microsoft.VisualBasic.FileIO;
 
 namespace idsTool
 {
@@ -18,10 +14,10 @@ namespace idsTool
 	[Verb("check", HelpText = "check files for issues.")]
 	public class CheckOptions
 	{
-		[Option('s', "schema", Required = true, HelpText = "Check XSD schema compliance against the relevant version.", Default = false)]
+		[Option('x', "xsd", Required = true, HelpText = "XSD sources.", Default = false)]
 		public IEnumerable<string> CheckSchema { get; set; }
 
-		[Option('x', "xsd", Default = false, Required = false, HelpText = "Check validity of the xsd schemas in the expected relative folder.")]
+		[Option('s', "schema", Default = false, Required = false, HelpText = "Check validity of the xsd schemas.")]
 		public bool CheckSchemaDefinition { get; set; }
 
 		[Value(0, 
@@ -84,6 +80,8 @@ namespace idsTool
 			return Status.NotFoundError;
 		}
 
+		
+
 		private Status PerformSchemaCheck(CheckOptions c)
 		{
 			Status ret = Status.Ok;
@@ -92,7 +90,8 @@ namespace idsTool
 			{
 				try
 				{
-					rSettings.Schemas.Add("", schemaFile.FullName);
+					var ns = GetSchemaNamespace(schemaFile);
+					rSettings.Schemas.Add(ns, schemaFile.FullName);
 				}
 				catch (XmlSchemaException ex)
 				{
@@ -106,6 +105,25 @@ namespace idsTool
 				}
 			}
 			return ret;
+		}
+
+		static Dictionary<string, string> NameSpaces = new Dictionary<string, string>();
+
+		private static string GetSchemaNamespace(FileInfo schemaFile)
+		{
+			if (NameSpaces.ContainsKey(schemaFile.FullName)) 
+				return NameSpaces[schemaFile.FullName];
+
+			string tns = "";
+			var re = new Regex(@"targetNamespace=""(?<tns>[^""]*)""");
+			var t = File.ReadAllText(schemaFile.FullName);
+			var m = re.Match(t);
+			if (m.Success)
+			{
+				tns = m.Groups["tns"].Value;
+			}
+			NameSpaces.Add(schemaFile.FullName, tns);
+			return tns;
 		}
 
 		private IEnumerable<FileInfo> GetSchemas()
@@ -207,15 +225,12 @@ namespace idsTool
 			ret |= CheckSchemaCompliance(c, zippedFileInfo);
 			return Status.Ok;
 		}
+
 		
 		private static Status CheckSchemaCompliance(CheckInfo c, FileInfo unzippedDir)
 		{
 			c.validatingFile = unzippedDir.FullName;
-			XmlReaderSettings rSettings = new XmlReaderSettings();
-			foreach (var schema in c.Options.GetSchemas())
-			{
-				rSettings.Schemas.Add("", schema.FullName);
-			}
+			XmlReaderSettings rSettings = GetSchemaSettings(c);
 			rSettings.ValidationType = ValidationType.Schema;
 			rSettings.ValidationEventHandler += new ValidationEventHandler(c.validationReporter);
 			XmlReader content = XmlReader.Create(File.OpenRead(unzippedDir.FullName), rSettings);
@@ -226,5 +241,16 @@ namespace idsTool
 			return c.Status;
 		}
 
+		private static XmlReaderSettings GetSchemaSettings(CheckInfo c)
+		{
+			XmlReaderSettings rSettings = new XmlReaderSettings();
+			foreach (var schema in c.Options.GetSchemas())
+			{
+				var tns = GetSchemaNamespace(schema);
+				rSettings.Schemas.Add(tns, schema.FullName);
+			}
+
+			return rSettings;
+		}
 	}
 }
