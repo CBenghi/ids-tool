@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ids-tool": {
+      "commandName": "Project",
+      "commandLineArgs": "check \"C:\\Data\\Dev\\BuildingSmart\\BCF-XML\\test cases\" -r v3.0 -q  "
+    }
+  }
+}
