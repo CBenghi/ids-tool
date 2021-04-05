@@ -136,40 +136,19 @@ namespace IdsLib
 
 		private static Status ProcessExamplesFolder(DirectoryInfo directoryInfo, CheckInfo c)
 		{
+#if NETSTANDARD2_0
+			var allBcfs = directoryInfo.GetFiles("*.xml", SearchOption.AllDirectories).ToList();
+#else
 			var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
 			var allBcfs = directoryInfo.GetFiles("*.xml", eop).ToList();
+#endif
+			
+
 			foreach (var bcf in allBcfs.OrderBy(x => x.FullName))
 			{
 				ProcessSingleFile(bcf, c);
 			}
 			return c.Status;
-		}
-
-		
-
-		private static DirectoryInfo GetRepoSchemasFolder(DirectoryInfo directoryInfo)
-		{
-			// the assumption is that the directory is either the entire repo, 
-			// or one of the test cases
-			//
-			var enumOptions = new EnumerationOptions { MatchCasing = MatchCasing.CaseInsensitive, RecurseSubdirectories = true };
-			var tmp = directoryInfo.GetDirectories("schemas", enumOptions).FirstOrDefault();
-			if (tmp != null)
-			{
-				return tmp;
-			}
-			var searchPath = "Test Cases";
-			var pos = directoryInfo.FullName.IndexOf(searchPath, StringComparison.InvariantCultureIgnoreCase);
-			if (pos != -1)
-			{
-				var testcasefolder = directoryInfo.FullName.Substring(0, pos + searchPath.Length);
-				var tdDirInfo = new DirectoryInfo(testcasefolder);
-				// the parent of the test cases is the main repo folder
-				if (!tdDirInfo.Exists) // this shoud always be the case
-					return null;
-				return tdDirInfo.Parent.GetDirectories("schemas", enumOptions).FirstOrDefault();
-			}
-			return null;
 		}
 
 		private class CheckInfo
@@ -209,11 +188,6 @@ namespace IdsLib
 					Console.WriteLine($"XML ERROR\t{validatingFile}\t{location}{e.Message}{newguid}");
 					Status |= Status.ContentError;
 				}
-			}
-
-			public string CleanName(FileSystemInfo f)
-			{
-				return Path.GetRelativePath(Options.ResolvedSource.FullName, f.FullName);
 			}
 		}
 
