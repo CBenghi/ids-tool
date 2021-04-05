@@ -3,7 +3,7 @@ using System;
 
 namespace idsTool
 {
-	partial class Program
+	public partial class Program
 	{
 		static public int Main(string[] args)
 		{
@@ -16,15 +16,14 @@ namespace idsTool
 		}
 
 		[Flags]
-		internal enum Status
+		public enum Status
 		{
 			Ok = 0,
 			NotImplemented = 1,
 			CommandLineError = 2,
 			NotFoundError = 4,
 			ContentError = 8,
-			ContentMismatchError = 16,
-			XsdSchemaError = 32,
+			XsdSchemaError = 16,
 		}
 	}
 }

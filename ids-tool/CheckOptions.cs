@@ -28,7 +28,7 @@ namespace idsTool
 
 		public FileSystemInfo ResolvedSource { get; set; }
 
-		internal static Status Run(CheckOptions opts)
+		public static Status Run(CheckOptions opts)
 		{
 			Console.WriteLine("=== ids-tool - checking IDS files.");
 
