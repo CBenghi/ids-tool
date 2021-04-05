@@ -9,9 +9,7 @@
     <Copyright>Claudio Benghi</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>A command line tool to check IDS Files.
-
-buildingSmart Information Delivery Specification files can be checked against their relative schema.
-</Description>
+buildingSmart Information Delivery Specification files can be checked against their relative schema.</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>IDS, buildingSmart</PackageTags>
     <AssemblyVersion>1.0.1.0</AssemblyVersion>
@@ -108,6 +106,10 @@ buildingSmart Information Delivery Specification files can be checked against th
       <PackagePath></PackagePath>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ids-lib\ids-lib.csproj" />
   </ItemGroup>
 
 </Project>

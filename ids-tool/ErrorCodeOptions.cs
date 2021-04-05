@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static IdsLib.CheckOptions;
 using static idsTool.Program;
 
 namespace idsTool

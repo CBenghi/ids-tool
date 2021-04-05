@@ -1,7 +1,9 @@
-﻿using System;
+﻿using IdsLib;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using static IdsLib.CheckOptions;
 
 namespace idsTool.tests
 {
@@ -16,7 +18,7 @@ namespace idsTool.tests
 
 			// to adjust once we fix the xml file in the other repo.
 			var ret = CheckOptions.Run(c);
-			Assert.Equal(Program.Status.ContentError, ret);
+			Assert.Equal(Status.ContentError, ret);
 		}
 	}
 }

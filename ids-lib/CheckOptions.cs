@@ -6,11 +6,9 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
-using static idsTool.Program;
 
-namespace idsTool
+namespace IdsLib
 {
-
 	[Verb("check", HelpText = "check files for issues.")]
 	public class CheckOptions
 	{
@@ -251,6 +249,17 @@ namespace idsTool
 			}
 
 			return rSettings;
+		}
+
+		[Flags]
+		public enum Status
+		{
+			Ok = 0,
+			NotImplemented = 1,
+			CommandLineError = 2,
+			NotFoundError = 4,
+			ContentError = 8,
+			XsdSchemaError = 16,
 		}
 	}
 }

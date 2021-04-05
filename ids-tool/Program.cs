@@ -1,5 +1,7 @@
 ﻿using CommandLine;
+using IdsLib;
 using System;
+using static IdsLib.CheckOptions;
 
 namespace idsTool
 {
@@ -15,15 +17,6 @@ namespace idsTool
 			return (int)t;
 		}
 
-		[Flags]
-		public enum Status
-		{
-			Ok = 0,
-			NotImplemented = 1,
-			CommandLineError = 2,
-			NotFoundError = 4,
-			ContentError = 8,
-			XsdSchemaError = 16,
-		}
+
 	}
 }
