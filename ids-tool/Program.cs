@@ -11,7 +11,7 @@ namespace idsTool
 		{
 			var t = Parser.Default.ParseArguments<CheckOptions, ErrorCodeOptions>(args)
 			  .MapResult(
-				(CheckOptions opts) => CheckOptions.Run(opts),
+				(CheckOptions opts) => CheckOptions.Run(opts, Console.Out),
 				(ErrorCodeOptions opts) => ErrorCodeOptions.Run(opts),
 				errs => Status.CommandLineError);
 			return (int)t;

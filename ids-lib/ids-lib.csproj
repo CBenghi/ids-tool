@@ -14,12 +14,12 @@
 		</Description>
 		<PackageIcon>icon.png</PackageIcon>
 		<PackageTags>IDS, buildingSmart</PackageTags>
-		<AssemblyVersion>1.0.2.0</AssemblyVersion>
-		<FileVersion>1.0.2.0</FileVersion>
+		<AssemblyVersion>1.0.3.0</AssemblyVersion>
+		<FileVersion>1.0.3.0</FileVersion>
 		<RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>First implementation.</PackageReleaseNotes>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 	</PropertyGroup>
 
 	<ItemGroup>

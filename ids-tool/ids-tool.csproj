@@ -12,12 +12,12 @@
 buildingSmart Information Delivery Specification files can be checked against their relative schema.</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>IDS, buildingSmart</PackageTags>
-    <AssemblyVersion>1.0.1.0</AssemblyVersion>
-    <FileVersion>1.0.1.0</FileVersion>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
     <RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageReleaseNotes>First implementation.</PackageReleaseNotes>
-    <Version>1.0.1</Version>
+    <Version>1.0.3</Version>
   </PropertyGroup>
 
   <!-- required for tool deployment -->

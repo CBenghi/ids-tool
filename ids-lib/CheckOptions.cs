@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Schema;
@@ -26,9 +27,11 @@ namespace IdsLib
 
 		public FileSystemInfo ResolvedSource { get; set; }
 
-		public static Status Run(CheckOptions opts)
+		public static Status Run(CheckOptions opts, TextWriter writer = null)
 		{
-			Console.WriteLine("=== ids-tool - checking IDS files.");
+			if (writer == null)
+				writer = Console.Out;
+			writer.WriteLine("=== ids-tool - checking IDS files.");
 
 			Status retvalue = Status.Ok;
 
@@ -38,7 +41,7 @@ namespace IdsLib
 				)
 			{
 				opts.CheckSchemaDefinition = true;
-				Console.WriteLine("Performing default checks.");
+				writer.WriteLine("Performing default checks.");
 			}
 			else
 			{
@@ -47,40 +50,40 @@ namespace IdsLib
 					checks.Add("XML content");
 				if (opts.CheckSchemaDefinition)
 					checks.Add("Xsd schemas correctness");
-				Console.WriteLine($"Checking: {string.Join(", ", checks.ToArray())}." );
+				writer.WriteLine($"Checking: {string.Join(", ", checks.ToArray())}." );
 			}
 
 			// start checking
 			if (opts.CheckSchemaDefinition)
 			{
-				retvalue |= opts.PerformSchemaCheck(opts);
+				retvalue |= opts.PerformSchemaCheck(opts, writer);
 			}
 
 			if (Directory.Exists(opts.InputSource))
 			{
-				Console.WriteLine("");
+				writer.WriteLine("");
 				var t = new DirectoryInfo(opts.InputSource);
 				opts.ResolvedSource = t;
-				var ret = ProcessExamplesFolder(t, new CheckInfo(opts));
-				Console.WriteLine($"\r\nCompleted with status: {ret}.");
+				var ret = ProcessExamplesFolder(t, new CheckInfo(opts,writer));
+				writer.WriteLine($"\r\nCompleted with status: {ret}.");
 				return ret;
 			}
 			if (File.Exists(opts.InputSource))
 			{
-				Console.WriteLine("");
+				writer.WriteLine("");
 				var t = new FileInfo(opts.InputSource);
 				opts.ResolvedSource = t;
-				var ret = ProcessSingleFile(t, new CheckInfo(opts));
-				Console.WriteLine($"\r\nCompleted with status: {ret}.");
+				var ret = ProcessSingleFile(t, new CheckInfo(opts,writer));
+				writer.WriteLine($"\r\nCompleted with status: {ret}.");
 				return ret;
 			}
-			Console.WriteLine($"Error: Invalid input source '{opts.InputSource}'");
+			writer.WriteError($"Error: Invalid input source '{opts.InputSource}'");
 			return Status.NotFoundError;
 		}
 
 		
 
-		private Status PerformSchemaCheck(CheckOptions c)
+		private Status PerformSchemaCheck(CheckOptions c, TextWriter writer)
 		{
 			Status ret = Status.Ok;
 			XmlReaderSettings rSettings = new XmlReaderSettings();
@@ -93,12 +96,12 @@ namespace IdsLib
 				}
 				catch (XmlSchemaException ex)
 				{
-					Console.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message} at line {ex.LineNumber}, position {ex.LinePosition}.");
+					writer.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message} at line {ex.LineNumber}, position {ex.LinePosition}.");
 					ret |= Status.XsdSchemaError;
 				}
 				catch (Exception ex)
 				{
-					Console.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message}.");
+					writer.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message}.");
 					ret |= Status.XsdSchemaError;
 				}
 			}
@@ -156,9 +159,14 @@ namespace IdsLib
 			// todo: rather ugly to have this here... I'm designing classes as I go along
 			public CheckOptions Options { get; }
 
-			public CheckInfo(CheckOptions opts)
+			public CheckInfo(CheckOptions opts, TextWriter writer)
 			{
 				Options = opts;
+				Writer = writer;
+				if (Writer is StringWriter)
+				{
+					Verbose = true;
+				}
 			}
 
 			public Dictionary<string, string> guids = new Dictionary<string, string>();
@@ -167,7 +175,11 @@ namespace IdsLib
 			public string validatingFile { get; set; }
 
 			public Status Status { get; internal set; }
-			
+
+			internal TextWriter Writer;
+
+			internal readonly bool Verbose;
+
 			public void validationReporter(object sender, ValidationEventArgs e)
 			{
 				var location = "";
@@ -180,12 +192,12 @@ namespace IdsLib
 				}
 				if (e.Severity == XmlSeverityType.Warning)
 				{
-					Console.WriteLine($"XML WARNING\t{validatingFile}\t{location}{e.Message}{newguid}");
+					Writer.WriteError($"XML WARNING",$"{validatingFile}\t{location}{e.Message}{newguid}");
 					Status |= Status.ContentError;
 				}
 				else if (e.Severity == XmlSeverityType.Error)
 				{
-					Console.WriteLine($"XML ERROR\t{validatingFile}\t{location}{e.Message}{newguid}");
+					Writer.WriteError($"XML ERROR", $"{validatingFile}\t{location}{e.Message}{newguid}");
 					Status |= Status.ContentError;
 				}
 			}
@@ -204,12 +216,17 @@ namespace IdsLib
 			c.validatingFile = unzippedDir.FullName;
 			XmlReaderSettings rSettings = GetSchemaSettings(c);
 			rSettings.ValidationType = ValidationType.Schema;
+			
 			rSettings.ValidationEventHandler += new ValidationEventHandler(c.validationReporter);
 			XmlReader content = XmlReader.Create(File.OpenRead(unzippedDir.FullName), rSettings);
+			var cntRead = 0;
 			while (content.Read())
 			{
+				cntRead++;
 				// read all files to trigger validation events.
 			}
+			if (c.Verbose)
+				c.Writer.WriteLine($"Read {unzippedDir.FullName}, {cntRead} elements.");
 			return c.Status;
 		}
 
