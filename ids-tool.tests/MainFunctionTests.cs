@@ -21,7 +21,7 @@ namespace idsTool.tests
 			var t = new StringWriter();
 			var ret = CheckOptions.Run(c, t);
 
-			Assert.Equal(Status.Ok, ret);
+			Assert.Equal(Status.ContentError, ret);
 		}
 	}
 }

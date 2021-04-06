@@ -145,13 +145,12 @@ namespace IdsLib
 			var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
 			var allBcfs = directoryInfo.GetFiles("*.xml", eop).ToList();
 #endif
-			
-
+			Status ret = Status.Ok;
 			foreach (var bcf in allBcfs.OrderBy(x => x.FullName))
 			{
-				ProcessSingleFile(bcf, c);
+				ret |= ProcessSingleFile(bcf, c);
 			}
-			return c.Status;
+			return ret;
 		}
 
 		private class CheckInfo
@@ -207,7 +206,7 @@ namespace IdsLib
 		{
 			Status ret = Status.Ok;
 			ret |= CheckSchemaCompliance(c, zippedFileInfo);
-			return Status.Ok;
+			return ret;
 		}
 
 		
