@@ -2,7 +2,7 @@
   "profiles": {
     "ids-tool": {
       "commandName": "Project",
-      "commandLineArgs": "check -x \"C:\\Data\\Dev\\BuildingSmart\\IDS\\Development\\Third production release\\ids.xsd\" -s \"C:\\Data\\Dev\\XbimPrivate\\Xbim.Xids\\TestResults\"   "
+      "commandLineArgs": "check -x \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\0.5\\ids_05.xsd\" -s \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\0.5\" "
     }
   }
 }

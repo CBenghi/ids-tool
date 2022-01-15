@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -129,12 +130,33 @@ namespace IdsLib
 
 		private IEnumerable<FileInfo> GetSchemas()
 		{
-			foreach (var item in this.CheckSchema)
+            var extra = new[] { "xsdschema.xsd", "xml.xsd" };
+			var saved = new List<string>();
+
+			// get the resources
+			var assembly = Assembly.GetExecutingAssembly();
+			foreach (var extraXsd in extra)
+            {
+				string resourceName = assembly.GetManifestResourceNames()
+				.Single(str => str.EndsWith(extraXsd));
+				using (Stream stream = assembly.GetManifestResourceStream(resourceName))
+				using (StreamReader reader = new StreamReader(stream))
+				{
+					string result = reader.ReadToEnd();
+					var tempFile = Path.GetTempFileName();
+					File.WriteAllText(tempFile, result);
+					saved.Add(tempFile);
+				}
+			}
+			
+			foreach (var item in this.CheckSchema.Union(saved))
 			{
 				FileInfo f = new FileInfo(item);
 				if (f.Exists)
 					yield return f;
 			}
+			
+
 		}
 
 		private static Status ProcessExamplesFolder(DirectoryInfo directoryInfo, CheckInfo c)
