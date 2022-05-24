@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net5.0;net6.0;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net6.0;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>IdsTool</RootNamespace>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -14,12 +14,12 @@
 	</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>IDS, buildingSmart</PackageTags>
-    <AssemblyVersion>1.0.5.0</AssemblyVersion>
-    <FileVersion>1.0.5.0</FileVersion>
-	<Version>1.0.5</Version>
+    <AssemblyVersion>1.0.6.0</AssemblyVersion>
+    <FileVersion>1.0.6.0</FileVersion>
+	<Version>1.0.6</Version>
     <RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>First implementation.</PackageReleaseNotes>
+    <PackageReleaseNotes>Moved to net6.</PackageReleaseNotes>
   </PropertyGroup>
 
   <!-- required for tool deployment -->
