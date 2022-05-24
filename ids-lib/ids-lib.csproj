@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net5.0;net6.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
 		<RootNamespace>IdsLib</RootNamespace>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -14,9 +14,9 @@ buildingSmart Information Delivery Specification files can be checked against th
 		<RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>First implementation.</PackageReleaseNotes>
-		<AssemblyVersion>1.0.8.0</AssemblyVersion>
-		<FileVersion>1.0.8.0</FileVersion>
-		<Version>1.0.8</Version>
+		<AssemblyVersion>1.0.9.0</AssemblyVersion>
+		<FileVersion>1.0.9.0</FileVersion>
+		<Version>1.0.9</Version>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="xml.xsd" />
