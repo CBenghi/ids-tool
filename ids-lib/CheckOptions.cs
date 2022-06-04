@@ -232,14 +232,15 @@ namespace IdsLib
 		}
 
 		
-		private static Status CheckSchemaCompliance(CheckInfo c, FileInfo unzippedDir)
+		private static Status CheckSchemaCompliance(CheckInfo c, FileInfo theFile)
 		{
-			c.validatingFile = unzippedDir.FullName;
+			c.validatingFile = theFile.FullName;
 			XmlReaderSettings rSettings = GetSchemaSettings(c);
 			rSettings.ValidationType = ValidationType.Schema;
 			
 			rSettings.ValidationEventHandler += new ValidationEventHandler(c.validationReporter);
-			XmlReader content = XmlReader.Create(File.OpenRead(unzippedDir.FullName), rSettings);
+			using var src = File.OpenRead(theFile.FullName);
+			XmlReader content = XmlReader.Create(src, rSettings);
 			var cntRead = 0;
 			while (content.Read())
 			{
@@ -247,7 +248,7 @@ namespace IdsLib
 				// read all files to trigger validation events.
 			}
 			if (c.Verbose)
-				c.Writer.WriteLine($"Read {unzippedDir.FullName}, {cntRead} elements.");
+				c.Writer.WriteLine($"Read {theFile.FullName}, {cntRead} elements.");
 			return c.Status;
 		}
 

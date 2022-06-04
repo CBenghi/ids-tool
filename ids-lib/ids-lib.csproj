@@ -7,6 +7,7 @@
 		<PackageProjectUrl>https://github.com/CBenghi/ids-tool/</PackageProjectUrl>
 		<Copyright>Claudio Benghi</Copyright>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<LangVersion>latest</LangVersion>
 		<Description>A command line tool to check IDS Files.
 buildingSmart Information Delivery Specification files can be checked against their relative schema.</Description>
 		<PackageIcon>icon.png</PackageIcon>
@@ -14,9 +15,9 @@ buildingSmart Information Delivery Specification files can be checked against th
 		<RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>First implementation.</PackageReleaseNotes>
-		<AssemblyVersion>1.0.10.0</AssemblyVersion>
-		<FileVersion>1.0.10.0</FileVersion>
-		<Version>1.0.10</Version>
+		<AssemblyVersion>1.0.12</AssemblyVersion>
+		<FileVersion>$(AssemblyVersion)</FileVersion>
+		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 	<ItemGroup>
 	  <None Remove="xml.xsd" />
