@@ -3,6 +3,10 @@
     "ids-tool": {
       "commandName": "Project",
       "commandLineArgs": "check -x \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\0.5\\ids_05.xsd\" -s \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\0.5\" "
+    },
+    "help check": {
+      "commandName": "Project",
+      "commandLineArgs": "help check"
     }
   }
 }

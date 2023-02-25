@@ -15,7 +15,8 @@ buildingSmart Information Delivery Specification files can be checked against th
 		<RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageReleaseNotes>First implementation.</PackageReleaseNotes>
-		<AssemblyVersion>1.0.13</AssemblyVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+		<AssemblyVersion>1.0.14</AssemblyVersion>
 		<FileVersion>$(AssemblyVersion)</FileVersion>
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
@@ -26,6 +27,7 @@ buildingSmart Information Delivery Specification files can be checked against th
 	<ItemGroup>
 	  <EmbeddedResource Include="xml.xsd" />
 	  <EmbeddedResource Include="xsdschema.xsd" />
+    <None Include="README.md" Pack="true" PackagePath="\"/>
 	</ItemGroup>
 	<ItemGroup>
 	  <None Include="..\graphics\icon.png" Link="icon.png">
