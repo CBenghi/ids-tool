@@ -14,13 +14,16 @@ namespace IdsLib
 	[Verb("check", HelpText = "check files for issues.")]
 	public class CheckOptions
 	{
-		[Option('x', "xsd", Required = true, HelpText = "XSD sources.", Default = false)]
+		[Option('x', "xsd", Required = true, HelpText = "XSD sources.")]
 		public IEnumerable<string> CheckSchema { get; set; }
 
 		[Option('s', "schema", Default = false, Required = false, HelpText = "Check validity of the xsd schemas.")]
 		public bool CheckSchemaDefinition { get; set; }
 
-		[Value(0, 
+        [Option('e', "extension", Default = "ids", Required = false, HelpText = "When passing a folder, as source, this can be used to define files to load by their extension.")]
+        public string InputExtension { get; set; }
+
+        [Value(0, 
 			MetaName = "source",
 			HelpText = "Input source to be processed; it can be a file or a folder.",
 			Required = false)]
@@ -65,11 +68,11 @@ namespace IdsLib
 				writer.WriteLine("");
 				var t = new DirectoryInfo(opts.InputSource);
 				opts.ResolvedSource = t;
-				var ret = ProcessExamplesFolder(t, new CheckInfo(opts,writer));
+				var ret = ProcessFolder(t, new CheckInfo(opts,writer));
 				writer.WriteLine($"\r\nCompleted with status: {ret}.");
 				return ret;
 			}
-			if (File.Exists(opts.InputSource))
+			else if (File.Exists(opts.InputSource))
 			{
 				writer.WriteLine("");
 				var t = new FileInfo(opts.InputSource);
@@ -155,24 +158,27 @@ namespace IdsLib
 				if (f.Exists)
 					yield return f;
 			}
-			
-
 		}
 
-		private static Status ProcessExamplesFolder(DirectoryInfo directoryInfo, CheckInfo c)
+		private static Status ProcessFolder(DirectoryInfo directoryInfo, CheckInfo c)
 		{
+			string idsExtension = c.Options.InputExtension;
 #if NETSTANDARD2_0
-			var allBcfs = directoryInfo.GetFiles("*.xml", SearchOption.AllDirectories).ToList();
+			var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", SearchOption.AllDirectories).ToList();
 #else
-			var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
-			var allBcfs = directoryInfo.GetFiles("*.xml", eop).ToList();
+            var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
+			var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", eop).ToList();
 #endif
 			Status ret = Status.Ok;
+			var tally = 0;
 			foreach (var bcf in allBcfs.OrderBy(x => x.FullName))
 			{
-				ret |= ProcessSingleFile(bcf, c);
+				ret = ProcessSingleFile(bcf, c) | ret;
+				tally++;
 			}
-			return ret;
+			var fileCardinality = tally != 1 ? "files" : "file";
+            c.Writer.Write($"{tally} {fileCardinality} processed.");
+            return ret;
 		}
 
 		private class CheckInfo
@@ -224,10 +230,10 @@ namespace IdsLib
 			}
 		}
 
-		private static Status ProcessSingleFile(FileInfo zippedFileInfo, CheckInfo c)
+		private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c)
 		{
 			Status ret = Status.Ok;
-			ret |= CheckSchemaCompliance(c, zippedFileInfo);
+			ret |= CheckSchemaCompliance(c, theFile);
 			return ret;
 		}
 
