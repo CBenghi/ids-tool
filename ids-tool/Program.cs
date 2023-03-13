@@ -1,7 +1,7 @@
 ﻿using CommandLine;
 using IdsLib;
 using System;
-using static IdsLib.CheckOptions;
+using static IdsLib.Check;
 
 namespace idsTool
 {
@@ -11,7 +11,7 @@ namespace idsTool
 		{
 			var t = Parser.Default.ParseArguments<CheckOptions, ErrorCodeOptions>(args)
 			  .MapResult(
-				(CheckOptions opts) => CheckOptions.Run(opts, Console.Out),
+				(CheckOptions opts) => Check.Run(opts, Console.Out),
 				(ErrorCodeOptions opts) => ErrorCodeOptions.Run(opts),
 				errs => Status.CommandLineError);
 			return (int)t;

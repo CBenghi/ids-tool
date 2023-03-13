@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>idsTool.tests</RootNamespace>
   </PropertyGroup>
 
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ids-lib\ids-lib.csproj" />
+    <ProjectReference Include="..\ids-tool\ids-tool.csproj" />
   </ItemGroup>
 
   
