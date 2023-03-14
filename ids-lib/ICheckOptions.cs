@@ -16,7 +16,7 @@ namespace IdsLib
         /// </summary>
         bool CheckSchemaDefinition { get; set; }
         /// <summary>
-        /// This can be used to define the extension to load when passing a folder in the <see cref="InputSource"/> parameter.
+        /// This is used to define the extension to load when passing a folder in the <see cref="InputSource"/> parameter. In doubt set it to "ids".
         /// </summary>
         string InputExtension { get; set; }
         /// <summary>

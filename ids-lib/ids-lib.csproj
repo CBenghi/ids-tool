@@ -27,7 +27,7 @@ buildingSmart Information Delivery Specification files can be checked against th
 	<ItemGroup>
 	  <EmbeddedResource Include="xml.xsd" />
 	  <EmbeddedResource Include="xsdschema.xsd" />
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>
 	  <None Include="..\graphics\icon.png" Link="icon.png">

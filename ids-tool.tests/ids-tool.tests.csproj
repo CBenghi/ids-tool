@@ -19,6 +19,24 @@
     <ProjectReference Include="..\ids-tool\ids-tool.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="InvalidFiles\empty.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InvalidFiles\notAnXml.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InvalidFiles\notAnIdsElement.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InvalidFiles\InvalidSchemaLocation.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="InvalidFiles\smallcross_gif.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   
 
 </Project>
