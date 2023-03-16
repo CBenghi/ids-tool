@@ -28,3 +28,19 @@ If no checking option is specificed then all checks are performed.
 
   source                  Required. Input source to be processed can be file or folder
 ```
+
+## Roadmap
+
+We are planning to introduce more checks:
+
+- [ ] IFC check - IfcTypeNames
+- [ ] PSets 
+  - [ ] Standard PSet Names for types
+	- [ Includes IFC type inheritance
+  - [ ] Pset name validity -> No custom "PSET_*"
+- [ ] Cardinality
+	- Min and Max values are valid
+	
+- we want all classes of IFC (and attributes)
+- DoorLiningiProperties (fake properties of 2x3)
+- Measure is optional but if value then becomes mandatory

@@ -1,11 +1,12 @@
 ﻿using CommandLine;
 using IdsLib;
+using IdsTool;
 using System;
 using static IdsLib.Check;
 
 namespace idsTool
 {
-	public partial class Program
+    public partial class Program
 	{
 		static public int Main(string[] args)
 		{

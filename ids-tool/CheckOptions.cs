@@ -1,8 +1,9 @@
 ﻿using CommandLine;
+using IdsLib;
 using System.Collections.Generic;
 using System.IO;
 
-namespace IdsLib
+namespace IdsTool
 {
     [Verb("check", HelpText = "check files for issues.")]
     public class CheckOptions : ICheckOptions

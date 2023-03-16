@@ -36,7 +36,12 @@ buildingSmart Information Delivery Specification files can be checked against th
 	    <Pack>True</Pack>
 	  </None>
 	</ItemGroup>
-
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>ids-tool.tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  
 	<ItemGroup>
 		<PackageReference Include="CommandLineParser" Version="2.8.0" />
 	</ItemGroup>
