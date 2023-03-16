@@ -56,7 +56,7 @@ namespace idsTool.tests
         {
             var d = new DirectoryInfo(IdsTestcasesPath);
             var comb = d.FullName + idsFile;
-            FileInfo f = new FileInfo(comb);
+            var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
             return f;
         }
@@ -80,7 +80,7 @@ namespace idsTool.tests
         {
             var d = new DirectoryInfo(IdsDevelopmentPath);
             var comb = d.FullName + idsFile;
-            FileInfo f = new FileInfo(comb);
+            var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
             return f;
         }

@@ -20,7 +20,7 @@ namespace IdsLib.Helpers
             return await GetIdsInformationAsync(fs);
         }
 
-        private enum elementName
+        private enum ElementName
         {
             undefined,
             ids,
@@ -35,7 +35,7 @@ namespace IdsLib.Helpers
             };
 
             // First element has to be an IDS
-            var currentElement = elementName.undefined;
+            // var currentElement = ElementName.undefined;
 
             using XmlReader reader = XmlReader.Create(stream, settings);
             try
@@ -52,7 +52,7 @@ namespace IdsLib.Helpers
                             {
                                 case "ids":
                                     ret.IsIds = true;
-                                    currentElement = elementName.ids;
+                                    // currentElement = ElementName.ids;
                                     ret.SchemaLocation = reader.GetAttribute("schemaLocation", "http://www.w3.org/2001/XMLSchema-instance");
                                     return ret;
                                 default:
