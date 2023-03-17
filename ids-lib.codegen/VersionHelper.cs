@@ -1,5 +1,4 @@
-﻿using System;
-using Xbim.Common;
+﻿using Xbim.Common;
 
 namespace IdsLib.Generator
 {

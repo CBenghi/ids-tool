@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdsLib.IfcSchema
+﻿namespace IdsLib.IfcSchema
 {
     internal class IfcAttributeInformation
     {
+        public IfcAttributeInformation(string name)
+        {
+            IfcAttributeName = name;
+        }
         public string IfcAttributeName { get; set; }
     }
 }

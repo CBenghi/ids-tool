@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IdsLib
 {
-	public static class TextWriterExtensions
-	{
+    public static class TextWriterExtensions
+    {
         private static bool IsConsole(this TextWriter writer)
         {
             if (writer == Console.Out)

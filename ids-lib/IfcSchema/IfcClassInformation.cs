@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace IdsLib.IfcSchema
 {
@@ -25,7 +21,7 @@ namespace IdsLib.IfcSchema
                 ValidSchemaVersions |= v;
             }
         }
-    
+
         public string IfcClassName { get; set; } = string.Empty;
 
         public IfcSchemaVersions ValidSchemaVersions { get; set; } = IfcSchemaVersions.IfcNoVersion;

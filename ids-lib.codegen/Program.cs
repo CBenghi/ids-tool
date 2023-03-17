@@ -4,7 +4,7 @@ namespace ids_lib_codegen
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             var destPath = new DirectoryInfo(@"..\..\..\..\");
             Console.WriteLine("Running code generation for ids-lib.");

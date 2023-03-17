@@ -1,7 +1,6 @@
 ﻿using CommandLine;
 using IdsLib;
 using System.Collections.Generic;
-using System.IO;
 
 namespace IdsTool
 {

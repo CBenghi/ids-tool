@@ -1,11 +1,8 @@
 ﻿using FluentAssertions;
 using IdsLib.Helpers;
 using IdsLib.IdsSchema;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -56,7 +53,7 @@ namespace idsTool.tests
         {
             var d = new DirectoryInfo(IdsTestcasesPath);
             var comb = d.FullName + idsFile;
-            FileInfo f = new FileInfo(comb);
+            var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
             return f;
         }
@@ -80,7 +77,7 @@ namespace idsTool.tests
         {
             var d = new DirectoryInfo(IdsDevelopmentPath);
             var comb = d.FullName + idsFile;
-            FileInfo f = new FileInfo(comb);
+            var f = new FileInfo(comb);
             f.Exists.Should().BeTrue("test file must be found");
             return f;
         }

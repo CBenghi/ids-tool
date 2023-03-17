@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IdsLib.IfcSchema
 {
@@ -18,15 +14,16 @@ namespace IdsLib.IfcSchema
         [IfcSchema(true)]
         Ifc4x3 = 1 << 2,
         [IfcSchema(false)]
-        IfcAllVersions = (1 << 3) -1
+        IfcAllVersions = (1 << 3) - 1
     }
 
+    [AttributeUsage(AttributeTargets.Field)]
     public class IfcSchemaAttribute : Attribute
     {
         public bool IsSpecificAttribute = false;
-        public IfcSchemaAttribute(bool isSpecific)        
+        public IfcSchemaAttribute(bool isSpecific)
         {
-            IsSpecificAttribute = isSpecific;  
+            IsSpecificAttribute = isSpecific;
         }
     }
 }

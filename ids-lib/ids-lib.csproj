@@ -2,6 +2,7 @@
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
 		<RootNamespace>IdsLib</RootNamespace>
+    <Nullable>enable</Nullable>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
 		<PackageProjectUrl>https://github.com/CBenghi/ids-tool/</PackageProjectUrl>
@@ -44,6 +45,7 @@ buildingSmart Information Delivery Specification files can be checked against th
   
 	<ItemGroup>
 		<PackageReference Include="CommandLineParser" Version="2.8.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

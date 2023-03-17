@@ -9,6 +9,7 @@ using System.Xml;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace IdsLib
 {
@@ -25,11 +26,8 @@ namespace IdsLib
             XsdSchemaError = 16,
         }
 
-        public static Status Run(ICheckOptions opts, TextWriter writer = null)
+        public static Status Run(ICheckOptions opts, ILogger? logger = null)
         {
-            writer ??= Console.Out;
-            writer.WriteLine("=== ids-tool - checking IDS files.");
-
             Status retvalue = Status.Ok;
 
             // if no check is required than check default
@@ -38,107 +36,89 @@ namespace IdsLib
                 )
             {
                 opts.CheckSchemaDefinition = true;
-                writer.WriteLine("Performing default checks.");
+                logger?.LogInformation("Performing default checks.");
             }
             else
             {
-                var checks = new List<string>();
+                var checkList = new List<string>();
                 if (opts.InputSource != null)
-                    checks.Add("XML content");
+                    checkList.Add("XML content");
                 if (opts.CheckSchemaDefinition)
-                    checks.Add("Xsd schemas correctness");
-                writer.WriteLine($"Checking: {string.Join(", ", checks.ToArray())}.");
+                    checkList.Add("Xsd schemas correctness");
+                logger?.LogInformation("Checking: {checks}.", string.Join(", ", checkList.ToArray()));
             }
 
             // start checking
             if (opts.CheckSchemaDefinition)
             {
-                retvalue |= PerformSchemaCheck(opts, writer);
+                retvalue |= PerformSchemaCheck(opts, logger);
                 if (retvalue != Status.Ok)
                     return retvalue;
             }
 
             if (Directory.Exists(opts.InputSource))
             {
-                writer.WriteLine("");
                 var t = new DirectoryInfo(opts.InputSource);
-                var ret = ProcessFolder(t, new CheckInfo(opts, writer));
-                writer.WriteLine($"\r\nCompleted with status: {ret}.");
-                return CompleteWith(ret, writer);
+                var ret = ProcessFolder(t, new CheckInfo(opts, logger), logger);
+                return CompleteWith(ret, logger);
             }
             else if (File.Exists(opts.InputSource))
             {
-                writer.WriteLine("");
-                var t = new FileInfo(opts.InputSource);               
-                var ret = ProcessSingleFile(t, new CheckInfo(opts, writer));
-                return CompleteWith(ret, writer);
+                var t = new FileInfo(opts.InputSource);
+                var ret = ProcessSingleFile(t, new CheckInfo(opts, logger), logger);
+                return CompleteWith(ret, logger);
             }
-            writer.WriteError($"Error: Invalid input source '{opts.InputSource}'");
+            logger?.LogError("Error: Invalid input source '{missingSource}'", opts.InputSource);
             return Status.NotFoundError;
         }
 
-
-        private static Status CompleteWith(Status ret, TextWriter writer)
+        private static Status CompleteWith(Status ret, ILogger? writer)
         {
-            writer.WriteLine($"\r\nCompleted with status: {ret}.");
+            writer?.LogInformation("Completed with status: {status}.", ret);
             return ret;
         }
 
-
         private class CheckInfo
         {
-            // todo: rather ugly to have this here... I'm designing classes as I go along
             public ICheckOptions Options { get; }
 
-            public CheckInfo(ICheckOptions opts, TextWriter writer)
+            public CheckInfo(ICheckOptions opts, ILogger? writer)
             {
                 Options = opts;
                 Writer = writer;
-                if (Writer is StringWriter)
-                {
-                    Verbose = true;
-                }
             }
 
-            public Dictionary<string, string> guids = new();
-
-            // if you think `options` is ugly, this is jsut awful ;-)
-            public string ValidatingFile { get; set; }
+            public string? ValidatingFile { get; set; }
 
             public Status Status { get; internal set; }
 
-            internal TextWriter Writer;
+            internal ILogger? Writer;
 
-            internal readonly bool Verbose;
-
-            public void ValidationReporter(object sender, ValidationEventArgs e)
+            public void ValidationReporter(object? sender, ValidationEventArgs e)
             {
                 var location = "";
-                var newguid = "";
-                if (e.Message.Contains("'Guid' is missing"))
-                    newguid = $"You can use: '{Guid.NewGuid()}' instead.";
                 if (sender is IXmlLineInfo rdr)
                 {
                     location = $"Line: {rdr.LineNumber}, Position: {rdr.LinePosition}, ";
                 }
                 if (e.Severity == XmlSeverityType.Warning)
                 {
-                    Writer.WriteError($"XML WARNING", $"{ValidatingFile}\t{location}{e.Message}{newguid}");
+                    Writer?.LogWarning($"XML WARNING", $"{ValidatingFile}\t{location}{e.Message}");
                     Status |= Status.ContentError;
                 }
                 else if (e.Severity == XmlSeverityType.Error)
                 {
-                    Writer.WriteError($"XML ERROR", $"{ValidatingFile}\t{location}{e.Message}{newguid}");
+                    Writer?.LogError($"XML ERROR", $"{ValidatingFile}\t{location}{e.Message}");
                     Status |= Status.ContentError;
                 }
             }
         }
 
 
-        private static Status CheckSchemaCompliance(CheckInfo c, FileInfo theFile)
+        private static Status CheckSchemaCompliance(CheckInfo c, FileInfo theFile, ILogger? logger)
         {
             c.ValidatingFile = theFile.FullName;
-            XmlReaderSettings rSettings = GetSchemaSettings(c);
+            XmlReaderSettings rSettings = GetSchemaSettings(c, logger);
             rSettings.ValidationType = ValidationType.Schema;
 
             rSettings.ValidationEventHandler += new ValidationEventHandler(c.ValidationReporter);
@@ -148,17 +128,16 @@ namespace IdsLib
             while (content.Read())
             {
                 cntRead++;
-                // read all files to trigger validation events.
+                // read all file to trigger validation events.
             }
-            if (c.Verbose)
-                c.Writer.WriteLine($"Read {theFile.FullName}, {cntRead} elements.");
+            c.Writer?.LogDebug("Read {fullname}, {cntRead} elements.", theFile.FullName, cntRead);
             return c.Status;
         }
 
-        private static XmlReaderSettings GetSchemaSettings(CheckInfo c)
+        private static XmlReaderSettings GetSchemaSettings(CheckInfo c, ILogger? logger)
         {
             var rSettings = new XmlReaderSettings();
-            foreach (var schema in GetSchemas(c.Options))
+            foreach (var schema in GetSchemas(c.Options, logger))
             {
                 var tns = GetSchemaNamespace(schema);
                 rSettings.Schemas.Add(tns, schema.FullName);
@@ -187,19 +166,19 @@ namespace IdsLib
         }
 
 
-        private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c)
+        private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c, ILogger? logger)
         {
             Status ret = Status.Ok;
-            ret |= CheckSchemaCompliance(c, theFile);
+            ret |= CheckSchemaCompliance(c, theFile, logger);
             return ret;
         }
 
 
-        private static Status ProcessFolder(DirectoryInfo directoryInfo, CheckInfo c)
+        private static Status ProcessFolder(DirectoryInfo directoryInfo, CheckInfo c, ILogger? logger)
         {
             string idsExtension = c.Options.InputExtension;
 #if NETSTANDARD2_0
-			var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", SearchOption.AllDirectories).ToList();
+            var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", SearchOption.AllDirectories).ToList();
 #else
             var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
             var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", eop).ToList();
@@ -208,19 +187,19 @@ namespace IdsLib
             var tally = 0;
             foreach (var bcf in allBcfs.OrderBy(x => x.FullName))
             {
-                ret = ProcessSingleFile(bcf, c) | ret;
+                ret = ProcessSingleFile(bcf, c, logger) | ret;
                 tally++;
             }
             var fileCardinality = tally != 1 ? "files" : "file";
-            c.Writer.Write($"{tally} {fileCardinality} processed.");
+            c.Writer?.LogInformation("{tally} {fileCardinality} processed.", tally, fileCardinality);
             return ret;
         }
 
-        private static Status PerformSchemaCheck(ICheckOptions c, TextWriter writer)
+        private static Status PerformSchemaCheck(ICheckOptions c, ILogger? logger)
         {
             Status ret = Status.Ok;
             var rSettings = new XmlReaderSettings();
-            foreach (var schemaFile in GetSchemas(c))
+            foreach (var schemaFile in GetSchemas(c, logger))
             {
                 try
                 {
@@ -229,12 +208,12 @@ namespace IdsLib
                 }
                 catch (XmlSchemaException ex)
                 {
-                    writer.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message} at line {ex.LineNumber}, position {ex.LinePosition}.");
+                    logger?.LogError("XSD\t{schemaFile}\tSchema error: {errMessage} at line {line}, position {pos}.", schemaFile, ex.Message, ex.LineNumber, ex.LinePosition);
                     ret |= Status.XsdSchemaError;
                 }
                 catch (Exception ex)
                 {
-                    writer.WriteLine($"XSD\t{schemaFile}\tSchema error: {ex.Message}.");
+                    logger?.LogError("XSD\t{schemaFile}\tSchema error: {errMessage}.", schemaFile, ex.Message);
                     ret |= Status.XsdSchemaError;
                 }
             }
@@ -242,18 +221,23 @@ namespace IdsLib
         }
 
 
-        private static IEnumerable<FileInfo> GetSchemas(ICheckOptions opt)
+        private static IEnumerable<FileInfo> GetSchemas(ICheckOptions opt, ILogger? logger)
         {
             var extra = new[] { "xsdschema.xsd", "xml.xsd" };
             var saved = new List<string>();
 
             // get the resources
             var assembly = Assembly.GetExecutingAssembly();
-            foreach (var extraXsd in extra)
+            foreach (var resourceSchema in extra)
             {
                 string resourceName = assembly.GetManifestResourceNames()
-                .Single(str => str.EndsWith(extraXsd));
+                .Single(str => str.EndsWith(resourceSchema));
                 using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream == null)
+                {
+                    logger?.LogError("Error extracting resource: {schema}", resourceSchema);
+                    continue;
+                }
                 using var reader = new StreamReader(stream);
                 string result = reader.ReadToEnd();
                 var tempFile = Path.GetTempFileName();
