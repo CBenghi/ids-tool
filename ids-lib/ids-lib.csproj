@@ -22,12 +22,14 @@ buildingSmart Information Delivery Specification files can be checked against th
 		<Version>$(AssemblyVersion)</Version>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="Resources\XsdSchemas\ids.xsd" />
 	  <None Remove="xml.xsd" />
 	  <None Remove="xsdschema.xsd" />
 	</ItemGroup>
 	<ItemGroup>
-	  <EmbeddedResource Include="xml.xsd" />
-	  <EmbeddedResource Include="xsdschema.xsd" />
+	  <EmbeddedResource Include="Resources\XsdSchemas\ids.xsd" />
+	  <EmbeddedResource Include="Resources\XsdSchemas\xml.xsd" />
+	  <EmbeddedResource Include="Resources\XsdSchemas\xsdschema.xsd" />
     <None Include="README.md" Pack="true" PackagePath="\" />
 	</ItemGroup>
 	<ItemGroup>

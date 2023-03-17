@@ -33,16 +33,20 @@ If no checking option is specificed then all checks are performed.
 
 We are planning to introduce more checks:
 
-- [ ] Schema check 
+- [x] XSD Schema check
+  - [x] Use Xsd from disk
+  - [x] Use relevant Xsd from resource
+- [ ] IFC Schema check 
 	- [ ] IfcTypeNames
+		- [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
 	- [ ] Attribute names
+		- [ ] Attribute Names are hardcoded in the library
 - [ ] PSets 
   - [ ] Standard PSet Names for types
 	- [ ] Includes IFC type inheritance
   - [ ] Pset name validity -> No custom "PSET_*"
 - [ ] Cardinality
-	- Min and Max values are valid
-	
-- we want all classes of IFC (and attributes)
-- DoorLiningProperties (2x3)
-- Measure is optional but if a value is provided then it needs to be checked
+  - [ ] Min and Max values are valid
+- [ ] Measures
+  - [ ] optional but if a value is provided then it needs to be checked
+- [ ] DoorLiningProperties - discuss requirements

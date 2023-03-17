@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using IdsLib.Helpers;
 using IdsLib.IdsSchema;
+using idsTool.tests.Helpers;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -8,7 +9,7 @@ using Xunit;
 
 namespace idsTool.tests
 {
-    public class IdsInfoTests
+    public class IdsInfoTests : BuildingSmartRepoFiles
     {
         [Theory]
         [InlineData("InvalidFiles/empty.ids", false)]
@@ -24,7 +25,6 @@ namespace idsTool.tests
             t.Version.Should().Be(IdsVersion.Invalid);
             t.IsIds.Should().Be(isIds);
         }
-
 
         [Theory]
         [MemberData(nameof(GetDevelopmentIdsFiles))]
@@ -45,54 +45,5 @@ namespace idsTool.tests
             t.Should().NotBeNull();
             t.Version.Should().NotBe(IdsVersion.Invalid);
         }
-
-        #region get test case files
-        private const string IdsTestcasesPath = @"..\..\..\..\..\IDS\Documentation\testcases";
-
-        private static FileInfo GetTestCaseFile(string idsFile)
-        {
-            var d = new DirectoryInfo(IdsTestcasesPath);
-            var comb = d.FullName + idsFile;
-            var f = new FileInfo(comb);
-            f.Exists.Should().BeTrue("test file must be found");
-            return f;
-        }
-
-        public static IEnumerable<object[]> GetTestCaseIdsFiles()
-        {
-            // start from current directory and look in relative position for the bs IDS repository
-            var d = new DirectoryInfo(IdsTestcasesPath);
-            foreach (var f in d.GetFiles("*.ids", SearchOption.AllDirectories))
-            {
-                yield return new object[] { f.FullName.Replace(d.FullName, "") };
-            }
-        }
-        #endregion
-
-        #region get Development files
-
-        private const string IdsDevelopmentPath = @"..\..\..\..\..\IDS\Development";
-
-        private static FileInfo GetDevelopmentFile(string idsFile)
-        {
-            var d = new DirectoryInfo(IdsDevelopmentPath);
-            var comb = d.FullName + idsFile;
-            var f = new FileInfo(comb);
-            f.Exists.Should().BeTrue("test file must be found");
-            return f;
-        }
-
-        public static IEnumerable<object[]> GetDevelopmentIdsFiles()
-        {
-            // start from current directory and look in relative position for the bs IDS repository
-            var d = new DirectoryInfo(IdsDevelopmentPath);
-            foreach (var f in d.GetFiles("*.ids", SearchOption.AllDirectories))
-            {
-                yield return new object[] { f.FullName.Replace(d.FullName, "") };
-            }
-        }
-
-        #endregion
-
     }
 }

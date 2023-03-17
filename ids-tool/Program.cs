@@ -28,7 +28,7 @@ namespace idsTool
               .MapResult(
                 (CheckOptions opts) => Check.Run(opts, logger),
                 (ErrorCodeOptions opts) => ErrorCodeOptions.Run(opts),
-                errs => Check.Status.CommandLineError);
+                errs => Check.Status.InvalidOptionsError);
             return (int)t;
         }
 

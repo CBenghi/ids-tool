@@ -23,5 +23,9 @@ namespace IdsLib
         /// Input IDS to be processed; it can be a file or a folder.
         /// </summary>
         string InputSource { get; set; }
+        /// <summary>
+        /// If set to true skips the check of the semantic aspects of the IDS.
+        /// </summary>
+        bool OmitIdsContentCheck { get; set; }
     }
 }

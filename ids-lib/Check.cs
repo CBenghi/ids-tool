@@ -10,6 +10,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
+using IdsLib.Helpers;
+using IdsLib.IdsSchema;
 
 namespace IdsLib
 {
@@ -19,32 +21,41 @@ namespace IdsLib
         public enum Status
         {
             Ok = 0,
-            NotImplemented = 1,
-            CommandLineError = 2,
-            NotFoundError = 4,
-            ContentError = 8,
-            XsdSchemaError = 16,
+            NotImplementedError = 1 << 0,
+            InvalidOptionsError = 1 << 1,
+            NotFoundError = 1 << 2,
+            IdsStructureError = 1 << 3,
+            IdsContentError = 1 << 4,
+            XsdSchemaError = 1 << 5,
         }
 
         public static Status Run(ICheckOptions opts, ILogger? logger = null)
         {
             Status retvalue = Status.Ok;
-
-            // if no check is required than check default
-            if (
-                opts.InputSource == null
-                )
+            if (string.IsNullOrEmpty(opts.InputSource) && !opts.SchemaFiles.Any())
             {
+                // no IDS and no schema => nothing to do
+                logger?.LogWarning("Nothing to check.");
+                retvalue = Status.InvalidOptionsError;
+            }
+            else if (string.IsNullOrEmpty(opts.InputSource)) 
+            {
+                // No ids, but we have a schemafile => check the schema itself
                 opts.CheckSchemaDefinition = true;
-                logger?.LogInformation("Performing default checks.");
             }
             else
             {
+                // just inform on the config
                 var checkList = new List<string>();
-                if (opts.InputSource != null)
-                    checkList.Add("XML content");
+                if (!string.IsNullOrEmpty(opts.InputSource))
+                    checkList.Add("Ids structure");
                 if (opts.CheckSchemaDefinition)
                     checkList.Add("Xsd schemas correctness");
+                if (!checkList.Any())
+                {
+                    logger?.LogError("Invalid options.");
+                    return Status.InvalidOptionsError;
+                }
                 logger?.LogInformation("Checking: {checks}.", string.Join(", ", checkList.ToArray()));
             }
 
@@ -68,7 +79,7 @@ namespace IdsLib
                 var ret = ProcessSingleFile(t, new CheckInfo(opts, logger), logger);
                 return CompleteWith(ret, logger);
             }
-            logger?.LogError("Error: Invalid input source '{missingSource}'", opts.InputSource);
+            logger?.LogError("Invalid input source '{missingSource}'", opts.InputSource);
             return Status.NotFoundError;
         }
 
@@ -82,17 +93,17 @@ namespace IdsLib
         {
             public ICheckOptions Options { get; }
 
-            public CheckInfo(ICheckOptions opts, ILogger? writer)
+            internal ILogger? Logger;
+
+            public CheckInfo(ICheckOptions opts, ILogger? logger)
             {
                 Options = opts;
-                Writer = writer;
+                Logger = logger;
             }
 
             public string? ValidatingFile { get; set; }
 
             public Status Status { get; internal set; }
-
-            internal ILogger? Writer;
 
             public void ValidationReporter(object? sender, ValidationEventArgs e)
             {
@@ -103,22 +114,45 @@ namespace IdsLib
                 }
                 if (e.Severity == XmlSeverityType.Warning)
                 {
-                    Writer?.LogWarning($"XML WARNING", $"{ValidatingFile}\t{location}{e.Message}");
-                    Status |= Status.ContentError;
+                    Logger?.LogWarning($"XML WARNING", $"{ValidatingFile}\t{location}{e.Message}");
+                    Status |= Status.IdsStructureError;
                 }
                 else if (e.Severity == XmlSeverityType.Error)
                 {
-                    Writer?.LogError($"XML ERROR", $"{ValidatingFile}\t{location}{e.Message}");
-                    Status |= Status.ContentError;
+                    Logger?.LogError($"XML ERROR", $"{ValidatingFile}\t{location}{e.Message}");
+                    Status |= Status.IdsStructureError;
                 }
             }
         }
 
 
-        private static Status CheckSchemaCompliance(CheckInfo c, FileInfo theFile, ILogger? logger)
+        private static Status CheckIdsCompliance(CheckInfo c, FileInfo theFile, ILogger? logger)
         {
             c.ValidatingFile = theFile.FullName;
-            XmlReaderSettings rSettings = GetSchemaSettings(c, logger);
+
+            XmlReaderSettings rSettings;
+            if (c.Options.SchemaFiles.Any())
+            {
+                // we load the schema settings from the configuration options
+                rSettings = GetSchemaSettings(c.Options.SchemaFiles, logger);
+            }
+            else
+            {
+                // we load the schema settings from the file
+                var info = IdsXmlHelpers.GetIdsInformationAsync(theFile).Result;
+                if (info.Version == IdsVersion.Invalid)
+                {
+                    logger?.LogError("IDS schema version not found, or not recognised ({vrs}).", info.SchemaLocation);
+                    return Status.IdsStructureError;
+                }
+                var sett = GetSchemaSettings(info.Version, logger);
+                if (sett is null)
+                {
+                    logger?.LogError("Embedded schema not found for IDS version {vrs}.", info.Version);
+                    return Status.NotImplementedError;
+                }
+                rSettings = sett;
+            }
             rSettings.ValidationType = ValidationType.Schema;
 
             rSettings.ValidationEventHandler += new ValidationEventHandler(c.ValidationReporter);
@@ -130,19 +164,34 @@ namespace IdsLib
                 cntRead++;
                 // read all file to trigger validation events.
             }
-            c.Writer?.LogDebug("Read {fullname}, {cntRead} elements.", theFile.FullName, cntRead);
+            c.Logger?.LogDebug("Read {fullname}, {cntRead} elements.", theFile.FullName, cntRead);
             return c.Status;
         }
 
-        private static XmlReaderSettings GetSchemaSettings(CheckInfo c, ILogger? logger)
+        private static XmlReaderSettings? GetSchemaSettings(IdsVersion vrs, ILogger? logger)
         {
             var rSettings = new XmlReaderSettings();
-            foreach (var schema in GetSchemas(c.Options, logger))
+            var files = GetSchemaFiles(vrs, logger);
+            if (!files.Any())
+                return null;
+            foreach (var schema in files) // from GetSchemaSettings
             {
                 var tns = GetSchemaNamespace(schema);
                 rSettings.Schemas.Add(tns, schema.FullName);
             }
+            return rSettings;
+        }
 
+        
+
+        private static XmlReaderSettings GetSchemaSettings(IEnumerable<string> diskSchemas, ILogger? logger)
+        {
+            var rSettings = new XmlReaderSettings();
+            foreach (var schema in GetSchemaFiles(diskSchemas, logger)) // from GetSchemaSettings
+            {
+                var tns = GetSchemaNamespace(schema);
+                rSettings.Schemas.Add(tns, schema.FullName);
+            }
             return rSettings;
         }
 
@@ -169,10 +218,9 @@ namespace IdsLib
         private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c, ILogger? logger)
         {
             Status ret = Status.Ok;
-            ret |= CheckSchemaCompliance(c, theFile, logger);
+            ret |= CheckIdsCompliance(c, theFile, logger);
             return ret;
         }
-
 
         private static Status ProcessFolder(DirectoryInfo directoryInfo, CheckInfo c, ILogger? logger)
         {
@@ -191,15 +239,15 @@ namespace IdsLib
                 tally++;
             }
             var fileCardinality = tally != 1 ? "files" : "file";
-            c.Writer?.LogInformation("{tally} {fileCardinality} processed.", tally, fileCardinality);
+            c.Logger?.LogInformation("{tally} {fileCardinality} processed.", tally, fileCardinality);
             return ret;
         }
 
-        private static Status PerformSchemaCheck(ICheckOptions c, ILogger? logger)
+        private static Status PerformSchemaCheck(ICheckOptions checkOptions, ILogger? logger)
         {
             Status ret = Status.Ok;
             var rSettings = new XmlReaderSettings();
-            foreach (var schemaFile in GetSchemas(c, logger))
+            foreach (var schemaFile in GetSchemaFiles(checkOptions.SchemaFiles, logger)) // within PerformSchemaCheck
             {
                 try
                 {
@@ -220,15 +268,45 @@ namespace IdsLib
             return ret;
         }
 
-
-        private static IEnumerable<FileInfo> GetSchemas(ICheckOptions opt, ILogger? logger)
+        private static IEnumerable<FileInfo> GetSchemaFiles(IdsVersion vrs, ILogger? logger)
         {
-            var extra = new[] { "xsdschema.xsd", "xml.xsd" };
-            var saved = new List<string>();
+            List<string> resourceList;
+            switch (vrs)
+            {
+                case IdsVersion.Ids0_9:
+                    resourceList = new List<string> { "xsdschema.xsd", "xml.xsd", "ids.xsd" };
+                    break;
+                default:
+                    logger?.LogError("Embedded schema for version {vrs} not implemented.", vrs);
+                    yield break;
+            }
+            List<string> saved = ExtractResources(resourceList, logger);
+            foreach (var item in saved)
+            {
+                var f = new FileInfo(item);
+                if (f.Exists)
+                    yield return f;
+            }
+        }
 
+        private static IEnumerable<FileInfo> GetSchemaFiles(IEnumerable<string> diskFiles, ILogger? logger)
+        {
+            var resourceList = new List<string> { "xsdschema.xsd", "xml.xsd" };
+            List<string> saved = ExtractResources(resourceList, logger);
+            foreach (var item in diskFiles.Union(saved))
+            {
+                var f = new FileInfo(item);
+                if (f.Exists)
+                    yield return f;
+            }
+        }
+
+        private static List<string> ExtractResources(IEnumerable<string> resources, ILogger? logger)
+        {
             // get the resources
+            var saved = new List<string>();
             var assembly = Assembly.GetExecutingAssembly();
-            foreach (var resourceSchema in extra)
+            foreach (var resourceSchema in resources)
             {
                 string resourceName = assembly.GetManifestResourceNames()
                 .Single(str => str.EndsWith(resourceSchema));
@@ -245,13 +323,7 @@ namespace IdsLib
                 saved.Add(tempFile);
             }
 
-            foreach (var item in opt.SchemaFiles.Union(saved))
-            {
-                var f = new FileInfo(item);
-                if (f.Exists)
-                    yield return f;
-            }
+            return saved;
         }
-
     }
 }

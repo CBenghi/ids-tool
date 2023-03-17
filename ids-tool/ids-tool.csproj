@@ -8,6 +8,7 @@
     <PackageProjectUrl>https://github.com/CBenghi/ids-tool/</PackageProjectUrl>
     <Copyright>Claudio Benghi</Copyright>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Nullable>enable</Nullable>
     <Description>
 		A command line tool to check IDS Files.
         buildingSmart Information Delivery Specification files can be checked against their relative schema.

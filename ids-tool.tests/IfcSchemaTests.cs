@@ -12,7 +12,7 @@ namespace idsTool.tests
         {
             var root = SchemaInfo.AllClasses.FirstOrDefault(x => x.IfcClassName == "IfcRoot");
             root.Should().NotBeNull();
-            root.ValidSchemaVersions.Should().NotBe(IfcSchemaVersions.IfcNoVersion);
+            root!.ValidSchemaVersions.Should().NotBe(IfcSchemaVersions.IfcNoVersion);
             root.ValidSchemaVersions.Should().Be(IfcSchemaVersions.IfcAllVersions);
         }
     }
