@@ -33,14 +33,16 @@ If no checking option is specificed then all checks are performed.
 
 We are planning to introduce more checks:
 
-- [ ] IFC check - IfcTypeNames
+- [ ] Schema check 
+	- [ ] IfcTypeNames
+	- [ ] Attribute names
 - [ ] PSets 
   - [ ] Standard PSet Names for types
-	- [ Includes IFC type inheritance
+	- [ ] Includes IFC type inheritance
   - [ ] Pset name validity -> No custom "PSET_*"
 - [ ] Cardinality
 	- Min and Max values are valid
 	
 - we want all classes of IFC (and attributes)
-- DoorLiningiProperties (fake properties of 2x3)
-- Measure is optional but if value then becomes mandatory
+- DoorLiningProperties (2x3)
+- Measure is optional but if a value is provided then it needs to be checked
