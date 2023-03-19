@@ -10,6 +10,7 @@
             <ids:applicability>
                 <ids:entity>
                     <ids:name>
+                        <!-- Invalid element with invalid content -->
                         <ids:invalid>Invalid</ids:invalid>
                     </ids:name>
                 </ids:entity>

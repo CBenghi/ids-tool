@@ -8,14 +8,13 @@ using System.Xml.Schema;
 using System.Xml;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
-using IdsLib.Helpers;
 using IdsLib.IdsSchema;
+using System.Diagnostics;
 
 namespace IdsLib
 {
-    public static class Check
+    public static partial class Check
     {
         [Flags]
         public enum Status
@@ -89,44 +88,7 @@ namespace IdsLib
             return ret;
         }
 
-        private class CheckInfo
-        {
-            public ICheckOptions Options { get; }
-
-            internal ILogger? Logger;
-
-            public CheckInfo(ICheckOptions opts, ILogger? logger)
-            {
-                Options = opts;
-                Logger = logger;
-            }
-
-            public string? ValidatingFile { get; set; }
-
-            public Status Status { get; internal set; }
-
-            public void ValidationReporter(object? sender, ValidationEventArgs e)
-            {
-                var location = "";
-                if (sender is IXmlLineInfo rdr)
-                {
-                    location = $"Line: {rdr.LineNumber}, Position: {rdr.LinePosition}, ";
-                }
-                if (e.Severity == XmlSeverityType.Warning)
-                {
-                    Logger?.LogWarning($"XML WARNING", $"{ValidatingFile}\t{location}{e.Message}");
-                    Status |= Status.IdsStructureError;
-                }
-                else if (e.Severity == XmlSeverityType.Error)
-                {
-                    Logger?.LogError($"XML ERROR", $"{ValidatingFile}\t{location}{e.Message}");
-                    Status |= Status.IdsStructureError;
-                }
-            }
-        }
-
-
-        private static Status CheckIdsCompliance(CheckInfo c, FileInfo theFile, ILogger? logger)
+        private async static Task<Status> CheckIdsComplianceAsync(CheckInfo c, FileInfo theFile, ILogger? logger)
         {
             c.ValidatingFile = theFile.FullName;
 
@@ -154,19 +116,58 @@ namespace IdsLib
                 rSettings = sett;
             }
             rSettings.ValidationType = ValidationType.Schema;
-
+            rSettings.Async = true;
             rSettings.ValidationEventHandler += new ValidationEventHandler(c.ValidationReporter);
+            rSettings.IgnoreComments = true;
+            rSettings.IgnoreWhitespace = true;
+
             using var src = File.OpenRead(theFile.FullName);
-            XmlReader content = XmlReader.Create(src, rSettings);
+            var reader = XmlReader.Create(src, rSettings);
             var cntRead = 0;
-            while (content.Read())
+            var elementsStack = new Stack<BaseContext>(); // we prepare the stack to evaluate the IDS content
+            BaseContext? current = null;
+            Status contentStatus = Status.Ok;
+            while (await reader.ReadAsync()) // the loop reads the entire file to trigger validation events.
             {
                 cntRead++;
-                // read all file to trigger validation events.
+                if (!c.Options.OmitIdsContentCheck) // content checks can be omitted, but the while loop is still executed
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Element:
+                            Debug.WriteLine($"Start Element {reader.LocalName}");
+                            var newContext = IdsXmlHelpers.GetContextFromElement(reader, logger); // this is always not null
+                            newContext.Parent = current;
+                            // we only push on the stack if it's not empty, e.g.: <some />
+                            if (!reader.IsEmptyElement)
+                                elementsStack.Push(newContext);
+                            else
+                                contentStatus |= newContext.Audit(logger); // invoking audit empty element
+                            current = newContext; 
+                            break;
+                        case XmlNodeType.Attribute:
+                            Debug.WriteLine($"Attribute Node: {reader.GetValueAsync().Result}");
+                            break;
+                        case XmlNodeType.Text:
+                            Debug.WriteLine($"  Text Node: {reader.GetValueAsync().Result}");
+                            break;
+                        case XmlNodeType.EndElement:
+                            Debug.WriteLine($"End Element {reader.LocalName}");
+                            var closing = elementsStack.Pop();
+                            Debug.WriteLine($"  auditing {closing.type} on end element");
+                            contentStatus |= closing.Audit(logger); // invoking audit on end of element
+                            break;
+                        default:
+                            Debug.WriteLine("Other node {0} with value '{1}'.", reader.NodeType, reader.Value);
+                            break;
+                    }
+                }
             }
             c.Logger?.LogDebug("Read {fullname}, {cntRead} elements.", theFile.FullName, cntRead);
-            return c.Status;
+            return c.Status | contentStatus;
         }
+
+        
 
         private static XmlReaderSettings? GetSchemaSettings(IdsVersion vrs, ILogger? logger)
         {
@@ -218,7 +219,7 @@ namespace IdsLib
         private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c, ILogger? logger)
         {
             Status ret = Status.Ok;
-            ret |= CheckIdsCompliance(c, theFile, logger);
+            ret |= CheckIdsComplianceAsync(c, theFile, logger).Result;
             return ret;
         }
 
@@ -226,16 +227,18 @@ namespace IdsLib
         {
             string idsExtension = c.Options.InputExtension;
 #if NETSTANDARD2_0
-            var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", SearchOption.AllDirectories).ToList();
+            var allIdss = directoryInfo.GetFiles($"*.{idsExtension}", SearchOption.AllDirectories).ToList();
 #else
             var eop = new EnumerationOptions() { RecurseSubdirectories = true, MatchCasing = MatchCasing.CaseInsensitive };
-            var allBcfs = directoryInfo.GetFiles($"*.{idsExtension}", eop).ToList();
+            var allIdss = directoryInfo.GetFiles($"*.{idsExtension}", eop).ToList();
 #endif
             Status ret = Status.Ok;
             var tally = 0;
-            foreach (var bcf in allBcfs.OrderBy(x => x.FullName))
+            foreach (var ids in allIdss.OrderBy(x => x.FullName))
             {
-                ret = ProcessSingleFile(bcf, c, logger) | ret;
+                logger?.LogInformation("Checking file: `{filename}`.", ids.FullName);
+                var sgl = ProcessSingleFile(ids, c, logger);
+                ret |= sgl;
                 tally++;
             }
             var fileCardinality = tally != 1 ? "files" : "file";

@@ -1,14 +1,23 @@
-﻿using IdsLib.IdsSchema;
+﻿using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace IdsLib.Helpers
+namespace IdsLib.IdsSchema
 {
     public class IdsXmlHelpers
     {
+        internal static BaseContext GetContextFromElement(XmlReader reader, ILogger? logger)
+        {
+            return reader.LocalName switch
+            {
+                "specification" => new IdsSpecification(reader, logger),
+                _ => new BaseContext(reader),
+            };
+        }
+
         public static async Task<IdsInformation> GetIdsInformationAsync(FileInfo fileInformation)
         {
             if (fileInformation is null)

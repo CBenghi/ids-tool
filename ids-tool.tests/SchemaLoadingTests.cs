@@ -30,7 +30,7 @@ namespace idsTool.tests
 
         [Theory]
         [InlineData("InvalidFiles/InvalidSchemaLocation.ids", Check.Status.IdsStructureError)]
-        [InlineData("InvalidFiles/IDS_aachen_example.ids", Check.Status.IdsStructureError)]
+        [InlineData("InvalidFiles/InvalidElementInvalidContent.ids", Check.Status.IdsStructureError)]
         [InlineData("ValidFiles/IDS_aachen_example.ids", Check.Status.Ok)]
         public void CanFailInvalidFileLoadingEmbeddedResourceSchema(string file, Check.Status expected)
         {
