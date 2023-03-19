@@ -39,6 +39,10 @@ We are planning to introduce more checks:
 - [ ] IFC Schema check 
 	- [ ] IfcTypeNames
 		- [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
+		- [x] Simple type names are audited
+		- [ ] More complex case of type match need to be audited
+		  - [ ] Regex matches
+		  - [ ] Multiple values allowed
 	- [ ] Attribute names
 		- [ ] Attribute Names are hardcoded in the library
 - [ ] PSets 

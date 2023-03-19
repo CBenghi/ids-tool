@@ -137,7 +137,13 @@ namespace IdsLib
                         case XmlNodeType.Element:
                             Debug.WriteLine($"Start Element {reader.LocalName}");
                             var newContext = IdsXmlHelpers.GetContextFromElement(reader, logger); // this is always not null
-                            newContext.Parent = current;
+#if NETSTANDARD2_0
+                            if (elementsStack.Count > 0)
+                                newContext.Parent = elementsStack.Peek();
+#else
+                            if (elementsStack.TryPeek(out var peeked))
+                                newContext.Parent = peeked;
+#endif
                             // we only push on the stack if it's not empty, e.g.: <some /> does not go on the stack
                             if (!reader.IsEmptyElement)
                                 elementsStack.Push(newContext);
