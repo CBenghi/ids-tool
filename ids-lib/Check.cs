@@ -138,7 +138,7 @@ namespace IdsLib
                             Debug.WriteLine($"Start Element {reader.LocalName}");
                             var newContext = IdsXmlHelpers.GetContextFromElement(reader, logger); // this is always not null
                             newContext.Parent = current;
-                            // we only push on the stack if it's not empty, e.g.: <some />
+                            // we only push on the stack if it's not empty, e.g.: <some /> does not go on the stack
                             if (!reader.IsEmptyElement)
                                 elementsStack.Push(newContext);
                             else
@@ -149,7 +149,8 @@ namespace IdsLib
                             Debug.WriteLine($"Attribute Node: {reader.GetValueAsync().Result}");
                             break;
                         case XmlNodeType.Text:
-                            Debug.WriteLine($"  Text Node: {reader.GetValueAsync().Result}");
+                            // Debug.WriteLine($"  Text Node: {reader.GetValueAsync().Result}");
+                            current!.SetContent(reader.GetValueAsync().Result);
                             break;
                         case XmlNodeType.EndElement:
                             Debug.WriteLine($"End Element {reader.LocalName}");

@@ -14,6 +14,7 @@ namespace IdsLib.IdsSchema
             return reader.LocalName switch
             {
                 "specification" => new IdsSpecification(reader, logger),
+                "simpleValue" => new IdsSimpleValue(reader),
                 _ => new BaseContext(reader),
             };
         }
