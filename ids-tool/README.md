@@ -8,12 +8,12 @@ Run the `ids-tool` executable with no parameters for instructions.
 
 The tool uses a `verb + options` approach. Available verbs are:
 
-- `check` check files for issues.
+- `audit` check files for issues.
 - `errorcode` provides description of tool's error code.
 - `help` Display more information on a specific command.
 - `version` Display version information.
 
-More help is available for each verb typing launching the tool with `help <verb>` syntax; e.g. `help check`.
+More help is available for each verb typing launching the tool with `help <verb>` syntax; e.g. `help audit`.
 
 ## Github actions
 
