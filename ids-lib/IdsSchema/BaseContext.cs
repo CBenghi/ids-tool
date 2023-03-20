@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Xml;
 
 namespace IdsLib.IdsSchema
 {
+    [DebuggerDisplay("{type} (Line {StartLineNumber}, Pos {StartLinePosition})")]
     internal class BaseContext 
     {
         protected internal readonly string type;
@@ -55,6 +57,13 @@ namespace IdsLib.IdsSchema
             }
             // not found, search on the parent, instead
             return TryGetNodes(start.Parent, ref nodes, typeNames);
+        }
+
+        protected static bool TryGetNodes(BaseContext start, string[] typeNames, out List<BaseContext> nodes)
+        {
+            var span = new ReadOnlySpan<string>(typeNames);
+            nodes = new List<BaseContext>();
+            return TryGetNodes(start, ref nodes, span);
         }
 
         protected static bool TryGetNodes(BaseContext start, ref List<BaseContext> nodes, ReadOnlySpan<string> typeNames)

@@ -26,6 +26,9 @@
     <None Update="InvalidFiles\empty.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="InvalidFiles\InvalidAttributeNames.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="InvalidFiles\InvalidEntityNames.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

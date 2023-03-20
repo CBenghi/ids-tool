@@ -8,37 +8,37 @@ using System.Threading.Tasks;
 
 namespace IdsLib.IdsSchema
 {
-    internal class NameEntitySpecification : IAuditAction
+    internal class NameAttributeSpecification : IAuditAction
     {
         private readonly IfcSchema.IfcSchemaVersions requiredSchemaVersions;
-        public NameEntitySpecification(IdsSpecification spec)
+        public NameAttributeSpecification(IdsSpecification spec)
         {
             requiredSchemaVersions = spec.SchemaVersions;
         }
 
-        public static NameEntitySpecification? FromNodes(List<BaseContext> nodes, ILogger? logger)
+        public static NameAttributeSpecification? FromNodes(List<BaseContext> nodes, ILogger? logger)
         {
             if (nodes[2] is not IdsSpecification spec)
             {
                 logger?.ReportUnexpectedScenario($"Mismatch of node type for specification", nodes[2]);
                 return null;
             }
-            return new NameEntitySpecification(spec);
+            return new NameAttributeSpecification(spec);
         }
 
         public Audit.Status Audit(IdsSimpleValue idsSimpleValue, ILogger? logger)
         {
-            var requiredClassName = idsSimpleValue.Content;
-            var ifcClass = SchemaInfo.AllClasses.FirstOrDefault(x => x.IfcClassName.ToUpperInvariant() == requiredClassName);
-            if (ifcClass is null)
+            var requiredAttributeName = idsSimpleValue.Content;
+            var ifcObject = SchemaInfo.AllAttributes.FirstOrDefault(x => x.IfcAttributeName == requiredAttributeName);
+            if (ifcObject is null)
             {
-                logger?.LogError("Invalid class name {className}.", requiredClassName);
+                logger?.LogError("Invalid attribute name {attributeName}.", requiredAttributeName);
                 return IdsLib.Audit.Status.IdsContentError;
             }
-            var match = (ifcClass.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions;
+            var match = (ifcObject.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions;
             if (!match)
             {
-                logger?.LogError("Mismatch in expected schema compatibility for {className} and {schema}.", requiredClassName, requiredSchemaVersions);
+                logger?.LogError("Mismatch in expected schema compatibility for {attributeName} and {schema}.", requiredAttributeName, requiredSchemaVersions);
                 return IdsLib.Audit.Status.IdsContentError;
             }
             return IdsLib.Audit.Status.Ok;

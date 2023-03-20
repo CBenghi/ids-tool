@@ -10,6 +10,7 @@ namespace IdsLib.Generator
         {
             var schemas = new[] { "Ifc2x3", "Ifc4", "Ifc4x3" };
             var classNames = new Dictionary<string, List<string>>();
+            var attNames = new Dictionary<string, List<string>>();
             foreach (var schema in schemas)
             {
                 System.Reflection.Module module = SchemaHelper.GetModule(schema);
@@ -26,15 +27,19 @@ namespace IdsLib.Generator
                         classNames.Add(daType.Name, new List<string>() { schema });
                     }
 
-                    //// Enriching schema with attribute names
-                    //var thisattnames = daType.Properties.Values.Select(x => x.Name);
-                    //foreach (var attributeName in thisattnames)
-                    //{
-                    //    if (!attNames.Contains(attributeName))
-                    //    {
-                    //        attNames.Add(attributeName);
-                    //    }
-                    //}
+                    // Enriching schema with attribute names
+                    var thisattnames = daType.Properties.Values.Select(x => x.Name);
+                    foreach (var attributeName in thisattnames)
+                    {
+                        if (attNames.TryGetValue(attributeName, out var attlst))
+                        {
+                            attlst.Add(schema);
+                        }
+                        else
+                        {
+                            attNames.Add(attributeName, new List<string>() { schema });
+                        }
+                    }
                 }
             }
             var source = stub;
@@ -46,7 +51,14 @@ namespace IdsLib.Generator
                 var schemes = classNames[clNm];
                 sbClasses.AppendLine($"""               yield return new IfcClassInformation("{clNm}", {CodeHelpers.NewStringArray(schemes)}); // {++i}""");
             }
+            i = 0;
+            foreach (var clNm in attNames.Keys.OrderBy(x => x))
+            {
+                var schemes = attNames[clNm];
+                sbAtts.AppendLine($"""               yield return new IfcAttributeInformation("{clNm}", {CodeHelpers.NewStringArray(schemes.Distinct())}); // {++i}""");
+            }
             source = source.Replace($"<PlaceHolderClasses>\r\n", sbClasses.ToString());
+            source = source.Replace($"<PlaceHolderAttributes>\r\n", sbAtts.ToString());
             source = source.Replace($"<PlaceHolderVersion>", VersionHelper.GetFileVersion(typeof(ExpressMetaData)));
             return source;
         }
@@ -70,6 +82,17 @@ namespace IdsLib.IfcSchema
             get
             {
 <PlaceHolderClasses>
+            }
+        }
+
+        /// <summary>
+        /// The names of all attributes across all schemas.
+        /// </summary>
+        public static IEnumerable<IfcAttributeInformation> AllAttributes
+        {
+            get
+            {
+<PlaceHolderAttributes>
             }
         }
     }

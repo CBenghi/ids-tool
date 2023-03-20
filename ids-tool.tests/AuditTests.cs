@@ -62,6 +62,7 @@ namespace idsTool.tests
         [InlineData("InvalidFiles/InvalidIfcVersion.ids", 2, Audit.Status.IdsStructureError)]
         [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 1, Audit.Status.IdsContentError)]
         [InlineData("InvalidFiles/InvalidEntityNames.ids", 3, Audit.Status.IdsContentError)]
+        [InlineData("InvalidFiles/InvalidAttributeNames.ids", 2, Audit.Status.IdsContentError)]
         public void FullAuditFail(string path, int numErr, Audit.Status status)
         {
             var f = new FileInfo(path);

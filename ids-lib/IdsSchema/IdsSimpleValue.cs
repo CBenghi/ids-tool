@@ -30,12 +30,14 @@ namespace IdsLib.IdsSchema
         }
 
         private static readonly string[] NameEntitySpecificationArray = { "name", "entity", "specification" };
+        private static readonly string[] NameAttributeSpecificationArray = { "name", "attribute", "specification" };
 
         private IAuditAction? GetAuditAction(ILogger? logger)
         {
-            var nodes = new List<BaseContext>();
-            if (TryGetNodes(this, ref nodes, new ReadOnlySpan<string>(NameEntitySpecificationArray)))
-                return NameEntitySpecification.FromNodes(nodes, logger); // if invalid, it will have notified the logger
+            if (TryGetNodes(this, NameEntitySpecificationArray, out var nameEntityNodes))
+                return NameEntitySpecification.FromNodes(nameEntityNodes, logger); 
+            if (TryGetNodes(this, NameAttributeSpecificationArray, out var nameAttributeNodes))
+                return NameAttributeSpecification.FromNodes(nameAttributeNodes, logger); 
             return null;   
         }
     }

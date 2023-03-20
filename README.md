@@ -75,13 +75,30 @@ We are planning to introduce more checks:
 		  - [ ] Regex matches
 		  - [ ] Multiple values allowed
 	- [ ] Attribute names
-		- [ ] Attribute Names are hardcoded in the library
+		- [x] Attribute Names are hardcoded in the library
+		- [x] Simple attribute names are audited
+		- [ ] More complex case of type match need to be audited
+		  - [ ] Regex matches
+		  - [ ] Multiple values allowed
 - [ ] PSets 
   - [ ] Standard PSet Names for types
 	- [ ] Includes IFC type inheritance
   - [ ] Pset name validity -> No custom "PSET_*"
 - [ ] Cardinality
-  - [ ] Min and Max values are valid
+  - [ ] Context
+    - [x] For Specification
+	- [ ] For facets
+		- [ ] partOf
+		- [ ] classification
+		- [ ] attribute
+		- [ ] property
+		- [ ] material
+  - Audit types
+    - [x] Min and Max values are intrinsically valid
+	- [ ] Min and Max values are limited to agreed patterns
+
+    
+
 - [ ] Measures
   - [ ] optional but if a value is provided then it needs to be checked
 - [ ] DoorLiningProperties - discuss requirements
