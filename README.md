@@ -32,6 +32,8 @@ Claudio Benghi
 
 ### the Audit command
 
+Options for the `audit` verb are as follows:
+
 ```
   -x, --xsd            XSD schema(s) to load, this is useful when testing changes in the schema (e.g. GitHub repo). If
                        this is not specified, an embedded schema is adopted depending on the each ids's declaration of
@@ -52,7 +54,7 @@ Claudio Benghi
   source (pos. 0)      Input IDS to be processed; it can be a file or a folder.
 ```
 
-### File Auditing Examples
+## File Auditing Examples
 
 Simple usage: `ids-tool audit path-to-some-file` or `ids-tool audit path-to-some-folder`.
 
