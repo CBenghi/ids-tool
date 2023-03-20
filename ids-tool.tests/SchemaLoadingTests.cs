@@ -19,28 +19,28 @@ namespace idsTool.tests
         public void CanLoadEmbeddedResourceSchema(string idsFile)
         {
             FileInfo f = GetDevelopmentFile(idsFile);
-            var c = new CheckOptions()
+            var c = new AuditOptions()
             {
                 InputSource = f.FullName,
-                OmitIdsContentCheck = true,
+                OmitIdsContentAudit = true,
             };
-            var checkResult = Check.Run(c);
-            checkResult.Should().Be(Check.Status.Ok);
+            var checkResult = Audit.Run(c);
+            checkResult.Should().Be(Audit.Status.Ok);
         }
 
         [Theory]
-        [InlineData("InvalidFiles/InvalidSchemaLocation.ids", Check.Status.IdsStructureError)]
-        [InlineData("InvalidFiles/InvalidElementInvalidContent.ids", Check.Status.IdsStructureError)]
-        [InlineData("ValidFiles/IDS_aachen_example.ids", Check.Status.Ok)]
-        public void CanFailInvalidFileLoadingEmbeddedResourceSchema(string file, Check.Status expected)
+        [InlineData("InvalidFiles/InvalidSchemaLocation.ids", Audit.Status.IdsStructureError)]
+        [InlineData("InvalidFiles/InvalidElementInvalidContent.ids", Audit.Status.IdsStructureError)]
+        [InlineData("ValidFiles/IDS_aachen_example.ids", Audit.Status.Ok)]
+        public void CanFailInvalidFileLoadingEmbeddedResourceSchema(string file, Audit.Status expected)
         {
             var f = new FileInfo(file);
-            var c = new CheckOptions()
+            var c = new AuditOptions()
             {
                 InputSource = f.FullName,
-                OmitIdsContentCheck = true,
+                OmitIdsContentAudit = true,
             };
-            var checkResult = Check.Run(c);
+            var checkResult = Audit.Run(c);
             checkResult.Should().Be(expected);
         }
     }

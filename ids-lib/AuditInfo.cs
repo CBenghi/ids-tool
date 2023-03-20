@@ -4,15 +4,15 @@ using Microsoft.Extensions.Logging;
 
 namespace IdsLib
 {
-    public static partial class Check
+    public static partial class Audit
     {
-        private class CheckInfo
+        private class AuditInfo
         {
-            public ICheckOptions Options { get; }
+            public IAuditOptions Options { get; }
 
             internal ILogger? Logger;
 
-            public CheckInfo(ICheckOptions opts, ILogger? logger)
+            public AuditInfo(IAuditOptions opts, ILogger? logger)
             {
                 Options = opts;
                 Logger = logger;

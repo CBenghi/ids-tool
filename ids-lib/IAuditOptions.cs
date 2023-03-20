@@ -3,9 +3,9 @@
 namespace IdsLib
 {
     /// <summary>
-    /// This interface contains the parameters to configure the execution of the cheks.
+    /// This interface contains the parameters to configure the execution of the audit.
     /// </summary>
-    public interface ICheckOptions
+    public interface IAuditOptions
     {
         /// <summary>
         /// XSD schema to load, this is useful when testing changes in the schema (e.g. GitHub repo).
@@ -14,7 +14,7 @@ namespace IdsLib
         /// <summary>
         /// Check validity of the xsd schema(s) passed with the <see cref="SchemaFiles"/> parameter.
         /// </summary>
-        bool CheckSchemaDefinition { get; set; }
+        bool AuditSchemaDefinition { get; set; }
         /// <summary>
         /// This is used to define the extension to load when passing a folder in the <see cref="InputSource"/> parameter. In doubt set it to "ids".
         /// </summary>
@@ -24,8 +24,8 @@ namespace IdsLib
         /// </summary>
         string InputSource { get; set; }
         /// <summary>
-        /// If set to true skips the check of the semantic aspects of the IDS.
+        /// If set to true skips the audit of the semantic aspects of the IDS.
         /// </summary>
-        bool OmitIdsContentCheck { get; set; }
+        bool OmitIdsContentAudit { get; set; }
     }
 }

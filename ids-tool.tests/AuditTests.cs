@@ -39,30 +39,30 @@ namespace idsTool.tests
         public void FullAuditOfDevelopmentFilesOk(string developmentIdsFile)
         {
             FileInfo f = GetDevelopmentFile(developmentIdsFile);
-            FullAudit(f, 0, Check.Status.Ok);
+            FullAudit(f, 0, Audit.Status.Ok);
         }
 
-        private void FullAudit(FileInfo f, int expectedWarnAndErrors, Check.Status expectedOutcome)
+        private void FullAudit(FileInfo f, int expectedWarnAndErrors, Audit.Status expectedOutcome)
         {
-            var c = new CheckOptions()
+            var c = new AuditOptions()
             {
                 InputSource = f.FullName,
-                OmitIdsContentCheck = false,
+                OmitIdsContentAudit = false,
             };
             ILogger logg = GetXunitLogger();
-            var checkResult = Check.Run(c, logg); // run for xunit output of logging
+            var checkResult = Audit.Run(c, logg); // run for xunit output of logging
             checkResult.Should().Be(expectedOutcome);
 
             var loggerMock = new Mock<ILogger<AuditTests>>();
-            Check.Run(c, loggerMock.Object); // run for testing of log errors and warnings
+            Audit.Run(c, loggerMock.Object); // run for testing of log errors and warnings
             CheckErrorsAndWarnings(loggerMock, expectedWarnAndErrors);
         }
 
         [Theory]
-        [InlineData("InvalidFiles/InvalidIfcVersion.ids", 2, Check.Status.IdsStructureError)]
-        [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 1, Check.Status.IdsContentError)]
-        [InlineData("InvalidFiles/InvalidEntityNames.ids", 3, Check.Status.IdsContentError)]
-        public void FullAuditFail(string path, int numErr, Check.Status status)
+        [InlineData("InvalidFiles/InvalidIfcVersion.ids", 2, Audit.Status.IdsStructureError)]
+        [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 1, Audit.Status.IdsContentError)]
+        [InlineData("InvalidFiles/InvalidEntityNames.ids", 3, Audit.Status.IdsContentError)]
+        public void FullAuditFail(string path, int numErr, Audit.Status status)
         {
             var f = new FileInfo(path);
             FullAudit(f, numErr, status);

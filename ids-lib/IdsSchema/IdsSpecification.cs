@@ -20,10 +20,10 @@ namespace IdsLib.IdsSchema
             SchemaVersions = vrs.GetSchemaVersions(this, logger);
         }
 
-        internal protected override Check.Status Audit(ILogger? logger)
+        internal protected override Audit.Status Audit(ILogger? logger)
         {
-            var ret = Check.Status.Ok;
-            if (m.Audit() != Check.Status.Ok)
+            var ret = IdsLib.Audit.Status.Ok;
+            if (m.Audit() != IdsLib.Audit.Status.Ok)
                 ret |= logger.ReportInvalidOccurr(this, m);
             if (SchemaVersions == IfcSchemaVersions.IfcNoVersion)
                 ret |= logger.ReportInvalidSchemaVersion(SchemaVersions, this);

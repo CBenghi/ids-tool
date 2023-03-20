@@ -1,14 +1,14 @@
 ﻿using CommandLine;
 using System;
-using static IdsLib.Check;
+using static IdsLib.Audit;
 
 namespace idsTool
 {
-    [Verb("errorcode", HelpText = "provides description of tool's error code.")]
+    [Verb("errorcode", HelpText = "provides description of tool's error code, useful when providing useer feedback in batch commands.")]
     internal class ErrorCodeOptions
     {
         [Value(0,
-            MetaName = "requestedcode",
+            MetaName = "requestedCode",
             HelpText = "the error code number to describe.",
             Required = true)]
         public int RequestedCode { get; set; }

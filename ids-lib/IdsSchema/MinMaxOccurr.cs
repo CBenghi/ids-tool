@@ -25,7 +25,7 @@ namespace IdsLib.IdsSchema
             maxString = reader.GetAttribute("maxOccurs") ?? "1"; 
         }
 
-        internal Check.Status Audit()
+        internal Audit.Status Audit()
         {
             try
             {
@@ -35,14 +35,14 @@ namespace IdsLib.IdsSchema
                     _ => int.Parse(maxString)
                 };
                 if (!int.TryParse(minString, out var min))
-                    return Check.Status.IdsContentError;
+                    return IdsLib.Audit.Status.IdsContentError;
                 return (min <= max)
-                    ? Check.Status.Ok
-                    : Check.Status.IdsContentError;
+                    ? IdsLib.Audit.Status.Ok
+                    : IdsLib.Audit.Status.IdsContentError;
             }
             catch (Exception)
             {
-                return Check.Status.IdsContentError;
+                return IdsLib.Audit.Status.IdsContentError;
             }
         }
     }

@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace IdsLib
 {
-    public static partial class Check
+    public static partial class Audit
     {
         [Flags]
         public enum Status
@@ -28,38 +28,40 @@ namespace IdsLib
             XsdSchemaError = 1 << 5,
         }
 
-        public static Status Run(ICheckOptions opts, ILogger? logger = null)
+        public static Status Run(IAuditOptions opts, ILogger? logger = null)
         {
             Status retvalue = Status.Ok;
             if (string.IsNullOrEmpty(opts.InputSource) && !opts.SchemaFiles.Any())
             {
                 // no IDS and no schema => nothing to do
-                logger?.LogWarning("Nothing to check.");
+                logger?.LogWarning("No audits are required, with the optins passed.");
                 retvalue = Status.InvalidOptionsError;
             }
             else if (string.IsNullOrEmpty(opts.InputSource)) 
             {
                 // No ids, but we have a schemafile => check the schema itself
-                opts.CheckSchemaDefinition = true;
+                opts.AuditSchemaDefinition = true;
             }
             else
             {
                 // just inform on the config
-                var checkList = new List<string>();
+                var auditsList = new List<string>();
                 if (!string.IsNullOrEmpty(opts.InputSource))
-                    checkList.Add("Ids structure");
-                if (opts.CheckSchemaDefinition)
-                    checkList.Add("Xsd schemas correctness");
-                if (!checkList.Any())
+                    auditsList.Add("Ids structure");
+                if (opts.AuditSchemaDefinition)
+                    auditsList.Add("Xsd schemas correctness");
+                if (!opts.OmitIdsContentAudit)
+                    auditsList.Add("Ids content");
+                if (!auditsList.Any())
                 {
                     logger?.LogError("Invalid options.");
                     return Status.InvalidOptionsError;
                 }
-                logger?.LogInformation("Checking: {checks}.", string.Join(", ", checkList.ToArray()));
+                logger?.LogInformation("Auditing: {audits}.", string.Join(", ", auditsList.ToArray()));
             }
 
-            // start checking
-            if (opts.CheckSchemaDefinition)
+            // start audit
+            if (opts.AuditSchemaDefinition)
             {
                 retvalue |= PerformSchemaCheck(opts, logger);
                 if (retvalue != Status.Ok)
@@ -69,13 +71,13 @@ namespace IdsLib
             if (Directory.Exists(opts.InputSource))
             {
                 var t = new DirectoryInfo(opts.InputSource);
-                var ret = ProcessFolder(t, new CheckInfo(opts, logger), logger);
+                var ret = ProcessFolder(t, new AuditInfo(opts, logger), logger);
                 return CompleteWith(ret, logger);
             }
             else if (File.Exists(opts.InputSource))
             {
                 var t = new FileInfo(opts.InputSource);
-                var ret = ProcessSingleFile(t, new CheckInfo(opts, logger), logger);
+                var ret = ProcessSingleFile(t, new AuditInfo(opts, logger), logger);
                 return CompleteWith(ret, logger);
             }
             logger?.LogError("Invalid input source '{missingSource}'", opts.InputSource);
@@ -88,7 +90,7 @@ namespace IdsLib
             return ret;
         }
 
-        private async static Task<Status> CheckIdsComplianceAsync(CheckInfo c, FileInfo theFile, ILogger? logger)
+        private async static Task<Status> AuditIdsComplianceAsync(AuditInfo c, FileInfo theFile, ILogger? logger)
         {
             c.ValidatingFile = theFile.FullName;
 
@@ -130,7 +132,7 @@ namespace IdsLib
             while (await reader.ReadAsync()) // the loop reads the entire file to trigger validation events.
             {
                 cntRead++;
-                if (!c.Options.OmitIdsContentCheck) // content checks can be omitted, but the while loop is still executed
+                if (!c.Options.OmitIdsContentAudit) // content audit can be omitted, but the while loop is still executed
                 {
                     switch (reader.NodeType)
                     {
@@ -223,14 +225,14 @@ namespace IdsLib
         }
 
 
-        private static Status ProcessSingleFile(FileInfo theFile, CheckInfo c, ILogger? logger)
+        private static Status ProcessSingleFile(FileInfo theFile, AuditInfo c, ILogger? logger)
         {
             Status ret = Status.Ok;
-            ret |= CheckIdsComplianceAsync(c, theFile, logger).Result;
+            ret |= AuditIdsComplianceAsync(c, theFile, logger).Result;
             return ret;
         }
 
-        private static Status ProcessFolder(DirectoryInfo directoryInfo, CheckInfo c, ILogger? logger)
+        private static Status ProcessFolder(DirectoryInfo directoryInfo, AuditInfo c, ILogger? logger)
         {
             string idsExtension = c.Options.InputExtension;
 #if NETSTANDARD2_0
@@ -243,7 +245,7 @@ namespace IdsLib
             var tally = 0;
             foreach (var ids in allIdss.OrderBy(x => x.FullName))
             {
-                logger?.LogInformation("Checking file: `{filename}`.", ids.FullName);
+                logger?.LogInformation("Auditing file: `{filename}`.", ids.FullName);
                 var sgl = ProcessSingleFile(ids, c, logger);
                 ret |= sgl;
                 tally++;
@@ -253,11 +255,11 @@ namespace IdsLib
             return ret;
         }
 
-        private static Status PerformSchemaCheck(ICheckOptions checkOptions, ILogger? logger)
+        private static Status PerformSchemaCheck(IAuditOptions auditOptions, ILogger? logger)
         {
             Status ret = Status.Ok;
             var rSettings = new XmlReaderSettings();
-            foreach (var schemaFile in GetSchemaFiles(checkOptions.SchemaFiles, logger)) // within PerformSchemaCheck
+            foreach (var schemaFile in GetSchemaFiles(auditOptions.SchemaFiles, logger)) // within PerformSchemaCheck
             {
                 try
                 {

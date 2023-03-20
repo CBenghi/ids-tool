@@ -30,10 +30,10 @@ namespace IdsLib.IdsSchema
         /// The Audit method of the base context always succeeds
         /// </summary>
         /// <param name="logger">unused in the base class</param>
-        /// <returns><see cref="IdsLib.Check.Status.Ok"/> in all circumstances, only overridden implementation determine failure behaviours</returns>
-        internal protected virtual Check.Status Audit(ILogger? logger)
+        /// <returns><see cref="IdsLib.Audit.Status.Ok"/> in all circumstances, only overridden implementation determine failure behaviours</returns>
+        internal protected virtual Audit.Status Audit(ILogger? logger)
         {
-            return IdsLib.Check.Status.Ok;
+            return IdsLib.Audit.Status.Ok;
         }
 
         internal protected virtual void SetContent(string contentString)

@@ -3,6 +3,7 @@ using IdsLib;
 using IdsTool;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 
 namespace idsTool
 {
@@ -22,13 +23,15 @@ namespace idsTool
                 });
             });
             var writer = Console.Out;
-            writer.WriteLine("=== ids-tool - checking IDS files.");
+            writer.WriteLine("=== ids-tool - utility tool for buildingSMART IDS files.");
             ILogger logger = loggerFactory.CreateLogger<Program>();
-            var t = Parser.Default.ParseArguments<CheckOptions, ErrorCodeOptions>(args)
+            var t = Parser.Default.ParseArguments<AuditOptions, ErrorCodeOptions>(args)
               .MapResult(
-                (CheckOptions opts) => Check.Run(opts, logger),
+                (AuditOptions opts) => Audit.Run(opts, logger),
                 (ErrorCodeOptions opts) => ErrorCodeOptions.Run(opts),
-                errs => Check.Status.InvalidOptionsError);
+                errs => Audit.Status.InvalidOptionsError);
+            if (!args.Any())
+                writer.WriteLine("The syntax of the command is `ids-tool <verb> [options]` (i.e. verb is mandatory, options depend on the verb).");
             return (int)t;
         }
 

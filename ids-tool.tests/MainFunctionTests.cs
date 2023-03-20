@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
-using static IdsLib.Check;
+using static IdsLib.Audit;
 
 namespace idsTool.tests
 {
@@ -14,7 +14,7 @@ namespace idsTool.tests
         [Fact]
         public void CanRunAsPublic()
         {
-            var c = new CheckOptions
+            var c = new AuditOptions
             {
                 SchemaFiles = new List<string> { schemaFile },
                 InputSource = idsFIle
@@ -32,7 +32,7 @@ namespace idsTool.tests
             var tmp = Path.GetTempFileName();
             File.Copy(idsFIle, tmp, true);
 
-            var c = new CheckOptions
+            var c = new AuditOptions
             {
                 SchemaFiles = new List<string> { schemaFile },
                 InputSource = tmp

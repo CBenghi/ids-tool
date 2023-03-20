@@ -1,33 +1,62 @@
 # IDS-Tool
 
-This repository contains a crude tool used for quality assurance of IDS files.
+This repository contains a tool used for quality assurance of IDS files according to the buildingSMART standard.
+
+It is comprised of two major components:
+
+- a reusalble dll that can be embedded in other applications, and 
+- a command line tool for direct usage.
 
 The tool itself is a .NET console application tha returns errors and warnings
-on the published files, in order to verify their correctness.
+on the files, in order to verify their correctness.
 
 ## Usage
 
-```
-id-tool.exe check <options> source
-
-ids-tool 1.0.0
-Copyright (C) 2021 ids-tool
-  check      check files for issues.
-  help       Display more information on a specific command.
-  version    Display version information.
-```
-
-### File Checking Options
-
-Simple usage: `ids-tool check foldername`
-
-If no checking option is specificed then all checks are performed.
+Executing `ids-tool help` provides the following guidance for available commands.
 
 ```
-  -s, --schema            Check XSD schema compliance against the relevant version.
+=== ids-tool - utility tool for buildingSMART IDS files.
+ids-tool 1.0.10
+Claudio Benghi
 
-  source                  Required. Input source to be processed can be file or folder
+  audit        Audits for ids schemas and ids files.
+
+  errorcode    provides description of tool's error code, useful when providing useer feedback in batch commands.
+
+  help         Display more information on a specific command.
+
+  version      Display version information.
 ```
+
+`ids-tool help <command>` provides guidance on the options available for that command.
+
+### the Audit command
+
+```
+  -x, --xsd            XSD schema(s) to load, this is useful when testing changes in the schema (e.g. GitHub repo). If
+                       this is not specified, an embedded schema is adopted depending on the each ids's declaration of
+                       version.
+
+  -s, --schema         (Default: false) Check validity of the xsd schema(s) passed with the `xsd` option. This is useful
+                       for the development of the schema and it is in use in the official repository for quality
+                       assurance purposes.
+
+  -e, --extension      (Default: ids) When passing a folder as source, this defines which files to audit by extension.
+
+  -c, --omitContent    Skips the audit of the agreed limitation of IDS contents.
+
+  --help               Display this help screen.
+
+  --version            Display version information.
+
+  source (pos. 0)      Input IDS to be processed; it can be a file or a folder.
+```
+
+### File Auditing Examples
+
+Simple usage: `ids-tool audit path-to-some-file` or `ids-tool audit path-to-some-folder`.
+
+If no option is specificed all available audits are performed on the IDS files.
 
 ## Roadmap
 

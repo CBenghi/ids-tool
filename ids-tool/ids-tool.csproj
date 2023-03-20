@@ -10,12 +10,12 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Nullable>enable</Nullable>
     <Description>
-		A command line tool to check IDS Files.
-        buildingSmart Information Delivery Specification files can be checked against their relative schema.
+		A command line tool to audit IDS Files and IDS schemas.
+        buildingSmart Information Delivery Specification files can be audited against their relative schema and against the implementation agreements of the standard.
 	</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageTags>IDS, buildingSmart</PackageTags>
-    <AssemblyVersion>1.0.9</AssemblyVersion>
+    <AssemblyVersion>1.0.10</AssemblyVersion>
 	<FileVersion>$(AssemblyVersion)</FileVersion>
 	<Version>$(AssemblyVersion)</Version>
     <RepositoryUrl>https://github.com/CBenghi/ids-tool.git</RepositoryUrl>

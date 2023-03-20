@@ -20,7 +20,7 @@ namespace IdsLib.IdsSchema
             Content = contentString ?? string.Empty;
         }
 
-        protected internal override Check.Status Audit(ILogger? logger)
+        protected internal override Audit.Status Audit(ILogger? logger)
         {
             // because the class is used in very many different scenarios,
             // what we actually have to check depends on the context

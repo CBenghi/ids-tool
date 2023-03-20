@@ -1,12 +1,23 @@
 {
   "profiles": {
-    "help check": {
-      "commandName": "Project",
-      "commandLineArgs": "help check"
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
     },
-    "check IDS development": {
+    "help audit": {
       "commandName": "Project",
-      "commandLineArgs": "check -x \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\ids.xsd\" -s \"C:\\Data\\Dev\\BuildingSmart\\IDS\\Development\""
+      "commandLineArgs": "help audit"
+    },
+    "audit IDS development folder": {
+      "commandName": "Project",
+      "commandLineArgs": "audit -x \"C:\\Data\\Dev\\BuildingSmart\\IDS2\\Development\\ids.xsd\" -s \"C:\\Data\\Dev\\BuildingSmart\\IDS\\Development\""
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "help"
+    },
+    "no param": {
+      "commandName": "Project"
     }
   }
 }
