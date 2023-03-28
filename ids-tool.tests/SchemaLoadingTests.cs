@@ -18,7 +18,7 @@ namespace idsTool.tests
         [MemberData(nameof(GetDevelopmentIdsFiles))]
         public void CanLoadEmbeddedResourceSchema(string idsFile)
         {
-            FileInfo f = GetDevelopmentFile(idsFile);
+            FileInfo f = GetDevelopmentFileInfo(idsFile);
             var c = new AuditOptions()
             {
                 InputSource = f.FullName,

@@ -12,7 +12,7 @@ namespace idsTool.tests.Helpers
     {
         private const string IdsTestcasesPath = @"..\..\..\..\..\IDS\Documentation\testcases";
 
-        internal static FileInfo GetTestCaseFile(string idsFile)
+        internal static FileInfo GetTestCaseFileInfo(string idsFile)
         {
             var d = new DirectoryInfo(IdsTestcasesPath);
             var comb = d.FullName + idsFile;
@@ -34,7 +34,7 @@ namespace idsTool.tests.Helpers
 
         private const string IdsDevelopmentPath = @"..\..\..\..\..\IDS\Development";
 
-        internal static FileInfo GetDevelopmentFile(string idsFile)
+        internal static FileInfo GetDevelopmentFileInfo(string idsFile)
         {
             var d = new DirectoryInfo(IdsDevelopmentPath);
             var comb = d.FullName + idsFile;

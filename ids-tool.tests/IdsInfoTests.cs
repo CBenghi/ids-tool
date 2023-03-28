@@ -29,7 +29,7 @@ namespace idsTool.tests
         [MemberData(nameof(GetDevelopmentIdsFiles))]
         public async Task CanReadIdsDevelopmentFiles(string idsFile)
         {
-            FileInfo f = GetDevelopmentFile(idsFile);
+            FileInfo f = GetDevelopmentFileInfo(idsFile);
             var t = await IdsXmlHelpers.GetIdsInformationAsync(f);
             t.Should().NotBeNull();
             t.Version.Should().NotBe(IdsVersion.Invalid);
@@ -39,7 +39,7 @@ namespace idsTool.tests
         [MemberData(nameof(GetTestCaseIdsFiles))]
         public async Task CanReadIdsTestCases(string idsFile)
         {
-            FileInfo f = GetTestCaseFile(idsFile);
+            FileInfo f = GetTestCaseFileInfo(idsFile);
             var t = await IdsXmlHelpers.GetIdsInformationAsync(f);
             t.Should().NotBeNull();
             t.Version.Should().NotBe(IdsVersion.Invalid);

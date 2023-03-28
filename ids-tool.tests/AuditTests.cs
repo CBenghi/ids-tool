@@ -38,8 +38,16 @@ namespace idsTool.tests
         [MemberData(nameof(GetDevelopmentIdsFiles))]
         public void FullAuditOfDevelopmentFilesOk(string developmentIdsFile)
         {
-            FileInfo f = GetDevelopmentFile(developmentIdsFile);
+            FileInfo f = GetDevelopmentFileInfo(developmentIdsFile);
             FullAudit(f, 0, Audit.Status.Ok);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetTestCaseIdsFiles))]
+        public void OmitContentAuditOfDocumentationFilesOk(string developmentIdsFile)
+        {
+            FileInfo f = GetTestCaseFileInfo(developmentIdsFile);
+            OmitContentAudit(f, 0, Audit.Status.Ok);
         }
 
         private void FullAudit(FileInfo f, int expectedWarnAndErrors, Audit.Status expectedOutcome)
@@ -49,6 +57,11 @@ namespace idsTool.tests
                 InputSource = f.FullName,
                 OmitIdsContentAudit = false,
             };
+            AuditWithOptions(expectedWarnAndErrors, expectedOutcome, c);
+        }
+
+        private void AuditWithOptions(int expectedWarnAndErrors, Audit.Status expectedOutcome, AuditOptions c)
+        {
             ILogger logg = GetXunitLogger();
             var checkResult = Audit.Run(c, logg); // run for xunit output of logging
             checkResult.Should().Be(expectedOutcome);
@@ -56,6 +69,17 @@ namespace idsTool.tests
             var loggerMock = new Mock<ILogger<AuditTests>>();
             Audit.Run(c, loggerMock.Object); // run for testing of log errors and warnings
             CheckErrorsAndWarnings(loggerMock, expectedWarnAndErrors);
+        }
+
+        private void OmitContentAudit(FileInfo f, int expectedWarnAndErrors, Audit.Status expectedOutcome)
+        {
+            var c = new AuditOptions()
+            {
+                InputSource = f.FullName,
+                OmitIdsContentAudit = true,
+                SchemaFiles = new[] { "/bsFiles/ids093.xsd" }
+            };
+            AuditWithOptions(expectedWarnAndErrors, expectedOutcome, c);
         }
 
         [Theory]
