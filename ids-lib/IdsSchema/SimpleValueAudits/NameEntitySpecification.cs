@@ -32,13 +32,13 @@ namespace IdsLib.IdsSchema
             var ifcClass = SchemaInfo.AllClasses.FirstOrDefault(x => x.IfcClassName.ToUpperInvariant() == requiredClassName);
             if (ifcClass is null)
             {
-                logger?.LogError("Invalid class name {className}.", requiredClassName);
+                logger?.LogError("Invalid class name '{className}'.", requiredClassName);
                 return IdsLib.Audit.Status.IdsContentError;
             }
             var match = (ifcClass.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions;
             if (!match)
             {
-                logger?.LogError("Mismatch in expected schema compatibility for {className} and {schema}.", requiredClassName, requiredSchemaVersions);
+                logger?.LogError("Mismatch in expected schema compatibility for class '{className}' and {schema}.", requiredClassName, requiredSchemaVersions);
                 return IdsLib.Audit.Status.IdsContentError;
             }
             return IdsLib.Audit.Status.Ok;

@@ -32,13 +32,13 @@ namespace IdsLib.IdsSchema
             var ifcObject = SchemaInfo.AllAttributes.FirstOrDefault(x => x.IfcAttributeName == requiredAttributeName);
             if (ifcObject is null)
             {
-                logger?.LogError("Invalid attribute name {attributeName}.", requiredAttributeName);
+                logger?.LogError("Invalid attribute name '{attributeName}'.", requiredAttributeName);
                 return IdsLib.Audit.Status.IdsContentError;
             }
             var match = (ifcObject.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions;
             if (!match)
             {
-                logger?.LogError("Mismatch in expected schema compatibility for {attributeName} and {schema}.", requiredAttributeName, requiredSchemaVersions);
+                logger?.LogError("Mismatch in expected schema compatibility for attribute '{attributeName}' and {schema}.", requiredAttributeName, requiredSchemaVersions);
                 return IdsLib.Audit.Status.IdsContentError;
             }
             return IdsLib.Audit.Status.Ok;
