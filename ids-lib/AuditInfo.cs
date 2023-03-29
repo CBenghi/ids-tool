@@ -2,43 +2,42 @@
 using System.Xml;
 using Microsoft.Extensions.Logging;
 
-namespace IdsLib
+namespace IdsLib;
+
+public static partial class Audit
 {
-    public static partial class Audit
+    private class AuditInfo
     {
-        private class AuditInfo
+        public IAuditOptions Options { get; }
+
+        internal ILogger? Logger;
+
+        public AuditInfo(IAuditOptions opts, ILogger? logger)
         {
-            public IAuditOptions Options { get; }
+            Options = opts;
+            Logger = logger;
+        }
 
-            internal ILogger? Logger;
+        public string? ValidatingFile { get; set; }
 
-            public AuditInfo(IAuditOptions opts, ILogger? logger)
+        public Status Status { get; internal set; }
+
+        public void ValidationReporter(object? sender, ValidationEventArgs e)
+        {
+            var location = "position unknown";
+            if (sender is IXmlLineInfo rdr)
             {
-                Options = opts;
-                Logger = logger;
+                location = $"line {rdr.LineNumber}, position {rdr.LinePosition}";
             }
-
-            public string? ValidatingFile { get; set; }
-
-            public Status Status { get; internal set; }
-
-            public void ValidationReporter(object? sender, ValidationEventArgs e)
+            if (e.Severity == XmlSeverityType.Warning)
             {
-                var location = "position unknown";
-                if (sender is IXmlLineInfo rdr)
-                {
-                    location = $"line {rdr.LineNumber}, position {rdr.LinePosition}";
-                }
-                if (e.Severity == XmlSeverityType.Warning)
-                {
-                    Logger?.LogWarning("XML WARNING at {location}; {message}", location, e.Message);
-                    Status |= Status.IdsStructureError;
-                }
-                else if (e.Severity == XmlSeverityType.Error)
-                {
-                    Logger?.LogError("XML ERROR at {location}; {message}", location, e.Message);
-                    Status |= Status.IdsStructureError;
-                }
+                Logger?.LogWarning("XML WARNING at {location}; {message}", location, e.Message);
+                Status |= Status.IdsStructureError;
+            }
+            else if (e.Severity == XmlSeverityType.Error)
+            {
+                Logger?.LogError("XML ERROR at {location}; {message}", location, e.Message);
+                Status |= Status.IdsStructureError;
             }
         }
     }

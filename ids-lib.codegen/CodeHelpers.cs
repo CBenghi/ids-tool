@@ -1,10 +1,9 @@
-﻿namespace IdsLib.codegen
+﻿namespace IdsLib.codegen;
+
+internal class CodeHelpers
 {
-    internal class CodeHelpers
+    internal static string NewStringArray(IEnumerable<string> classes)
     {
-        internal static string NewStringArray(IEnumerable<string> classes)
-        {
-            return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
-        }
+        return @$"new[] {{ ""{string.Join("\", \"", classes)}"" }}";
     }
 }

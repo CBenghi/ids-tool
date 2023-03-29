@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 
-namespace IdsLib.IfcSchema
-{
-    internal class IfcAttributeInformation
-    {
-        public string IfcAttributeName { get; set; }
-        public IfcSchemaVersions ValidSchemaVersions { get; set; } = IfcSchemaVersions.IfcNoVersion;
+namespace IdsLib.IfcSchema;
 
-        public IfcAttributeInformation(string name, IEnumerable<string> schemas)
-        {
-            IfcAttributeName = name;
-            ValidSchemaVersions = IfcSchema.GetSchema(schemas);
-        }
+internal class IfcAttributeInformation
+{
+    public string IfcAttributeName { get; set; }
+    public IfcSchemaVersions ValidSchemaVersions { get; set; } = IfcSchemaVersions.IfcNoVersion;
+
+    public IfcAttributeInformation(string name, IEnumerable<string> schemas)
+    {
+        IfcAttributeName = name;
+        ValidSchemaVersions = IfcSchema.GetSchema(schemas);
     }
 }

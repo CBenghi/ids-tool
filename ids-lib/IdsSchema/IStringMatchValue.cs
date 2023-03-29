@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace IdsLib.IdsSchema
 {
-    internal interface IIdsElementContext
+    internal interface IStringMatchValue
     {
-       
+        Audit.Status DoesMatch(IEnumerable<string> strings, ILogger? logger, out IEnumerable<string> matches);
+        string Value { get; }
     }
 }

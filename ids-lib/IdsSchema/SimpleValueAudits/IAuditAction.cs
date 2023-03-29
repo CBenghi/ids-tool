@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using IdsLib.IdsSchema.IdsNodes;
+using Microsoft.Extensions.Logging;
 
-namespace IdsLib.IdsSchema
+namespace IdsLib.IdsSchema;
+
+internal interface IAuditAction
 {
-    internal interface IAuditAction
-    {
-        Audit.Status Audit(IdsSimpleValue idsSimpleValue, ILogger? logger);
-    }
+    Audit.Status Audit(IdsSimpleValue idsSimpleValue, ILogger? logger);
 }
