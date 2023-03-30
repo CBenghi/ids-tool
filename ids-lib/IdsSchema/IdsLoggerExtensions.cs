@@ -15,6 +15,17 @@ internal static class IdsLoggerExtensions
         return Audit.Status.IdsContentError;
     }
 
+    /// <param name="alternative">no end fullstop</param>
+    internal static Audit.Status ReportInvalidXsFacet(this ILogger? logger, BaseContext context, string alternative)
+    {
+        if (string.IsNullOrWhiteSpace(alternative))
+            logger?.LogError("Invalid context for {tp} at line {line}, position {pos}.", context.type, context.StartLineNumber, context.StartLinePosition);
+        else
+            logger?.LogError("Invalid context for {tp} at line {line}, position {pos}; {alternative}.", context.type, context.StartLineNumber, context.StartLinePosition, alternative);
+
+        return Audit.Status.IdsContentError;
+    }
+
     internal static Audit.Status ReportInvalidStringMatcher(this ILogger? logger, BaseContext context, string field)
     {
         logger?.LogError("Invalid string matcher for `{field}` at element `{tp}`, line {line}, position {pos}.", field, context.type, context.StartLineNumber, context.StartLinePosition);
@@ -29,7 +40,7 @@ internal static class IdsLoggerExtensions
 
     internal static Audit.Status ReportBadType(ILogger? logger, BaseContext context, string baseAsString)
     {
-        logger?.LogError("Invalid type `{base}` for on element `{tp}` at line {line}, position {pos}.", baseAsString, context.type, context.StartLineNumber, context.StartLinePosition);
+        logger?.LogError("Invalid type `{base}` on element `{tp}` at line {line}, position {pos}.", baseAsString, context.type, context.StartLineNumber, context.StartLinePosition);
         return Audit.Status.IdsContentError;
     }
 
@@ -39,9 +50,9 @@ internal static class IdsLoggerExtensions
         return Audit.Status.IdsContentError;
     }
 
-    internal static Audit.Status ReportInvalidClassMatcher(BaseContext context, IStringMatchValue imv, ILogger? logger, string listToMatchName)
+    internal static Audit.Status ReportInvalidClassMatcher(BaseContext context, string value, ILogger? logger, string listToMatchName)
     {
-        logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` at line {line}, position {pos}.", imv.Value, context.type, listToMatchName, context.StartLineNumber, context.StartLinePosition);
+        logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` at line {line}, position {pos}.", value, context.type, listToMatchName, context.StartLineNumber, context.StartLinePosition);
         return Audit.Status.IdsContentError;
     }
 }

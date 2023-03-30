@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace IdsLib.IdsSchema.XsNodes;
 
-internal class XsEnumeration : BaseContext, IStringMatchValue
+internal class XsEnumeration : BaseContext, IStringListMatcher
 {
     private readonly string value;
     public XsEnumeration(XmlReader reader) : base(reader)
@@ -14,19 +14,14 @@ internal class XsEnumeration : BaseContext, IStringMatchValue
         value = reader.GetAttribute("value") ?? string.Empty;
     }
 
-    public string Value => value;
-
-    public Audit.Status DoesMatch(IEnumerable<string> strings, ILogger? logger, out IEnumerable<string> matches)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
     {
-        matches = strings.Where(x => x == value).ToList();
-        return matches.Any()
-            ? IdsLib.Audit.Status.Ok
-            : IdsLib.Audit.Status.IdsContentError;
-    }
-
-    protected internal override Audit.Status Audit(ILogger? logger)
-    {
-        Debug.WriteLine($"Children: {Children.Count}");
-        return base.Audit(logger);
+        var compCase = ignoreCase
+                    ? System.StringComparison.OrdinalIgnoreCase
+                    : System.StringComparison.Ordinal;
+        matches = candidateStrings.Where(x => x.Equals(value, compCase)).ToList();
+        if (!matches.Any())
+            return IdsLoggerExtensions.ReportInvalidClassMatcher(this, value, logger, listToMatchName);
+        return IdsLib.Audit.Status.Ok;
     }
 }

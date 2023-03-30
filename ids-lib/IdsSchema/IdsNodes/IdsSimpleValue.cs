@@ -15,34 +15,16 @@ internal partial class IdsSimpleValue : BaseContext, IStringListMatcher
     protected internal override void SetContent(string contentString)
     {
         Content = contentString ?? string.Empty;
-    }
+    }     
 
-    protected internal override Audit.Status Audit(ILogger? logger)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
     {
-        // because the class is used in very many different scenarios,
-        // what we actually have to check depends on the context
-        // 
-        var auditAction = GetAuditAction(logger);
-        return auditAction?.Audit(this, logger) ?? base.Audit(logger);
-    }
-
-    private static readonly string[] NameEntitySpecificationArray = { "name", "entity", "specification" };
-    private static readonly string[] NameAttributeSpecificationArray = { "name", "attribute", "specification" };
-
-    private IAuditAction? GetAuditAction(ILogger? logger)
-    {
-        if (TryGetUpperNodes(this, NameEntitySpecificationArray, out var nameEntityNodes))
-            return NameEntitySpecification.FromNodes(nameEntityNodes, logger);
-        if (TryGetUpperNodes(this, NameAttributeSpecificationArray, out var nameAttributeNodes))
-            return NameAttributeSpecification.FromNodes(nameAttributeNodes, logger);
-        return null;
-    }
-
-    public Audit.Status DoesMatch(IEnumerable<string> strings, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
-    {
-        matches = strings.Where(x => x == Content).ToList();
-        return matches.Any()
-            ? IdsLib.Audit.Status.Ok
-            : IdsLib.Audit.Status.IdsContentError;
+        var compCase = ignoreCase
+            ? System.StringComparison.OrdinalIgnoreCase
+            : System.StringComparison.Ordinal;
+        matches = candidateStrings.Where(x => x.Equals(Content, compCase)).ToList();
+        if (!matches.Any())
+            return IdsLoggerExtensions.ReportInvalidClassMatcher(this, Content, logger, listToMatchName);
+        return IdsLib.Audit.Status.Ok;
     }
 }

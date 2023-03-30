@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace IdsLib.IdsSchema.IdsNodes;
 
-internal class IdsEntity : BaseContext
+internal class IdsAttribute : BaseContext
 {
     private static readonly string[] SpecificationArray = { "specification" };
 
-    public IdsEntity(System.Xml.XmlReader reader) : base(reader)
+    public IdsAttribute(System.Xml.XmlReader reader) : base(reader)
     {
     }
 
@@ -27,8 +27,7 @@ internal class IdsEntity : BaseContext
         }
         var requiredSchemaVersions = spec.SchemaVersions;
         var names = GetChildNodes("name");
-        var type = GetChildNodes("predefinedType");
-
+        
         var ret = IdsLib.Audit.Status.Ok;
         foreach (var name in names)
         {
@@ -37,10 +36,10 @@ internal class IdsEntity : BaseContext
                 return IdsLoggerExtensions.ReportNoStringMatcher(logger, this, "name");
             if (name.Children[0] is not IStringListMatcher sm)
                 return IdsLoggerExtensions.ReportInvalidStringMatcher(logger, name.Children[0], "name");
-            var ValidClassNames = SchemaInfo.AllClasses
+            var ValidClassNames = SchemaInfo.AllAttributes
                 .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
-                .Select(y => y.IfcClassName.ToUpperInvariant());
-            var result = sm.DoesMatch(ValidClassNames, false, logger, out var matches, "entity names");
+                .Select(y => y.IfcAttributeName);
+            var result = sm.DoesMatch(ValidClassNames, false, logger, out var matches, "attribute names");
             ret |= result;
         }
         return ret;

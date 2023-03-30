@@ -19,9 +19,14 @@ public class IdsXmlHelpers
             "specification" => new IdsSpecification(reader, logger),
             "simpleValue" => new IdsSimpleValue(reader),
             "entity" => new IdsEntity(reader),
+            "attribute" => new IdsAttribute(reader),
             // xs
             "restriction" => new XsRestriction(reader),
             "enumeration" => new XsEnumeration(reader),
+            "totalDigits" => new XsTotalDigits(reader),
+            "pattern" => new XsPattern(reader),
+            "length" => new XsLength(reader),
+            // default
             _ => new BaseContext(reader),
         };
     }

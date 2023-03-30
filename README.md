@@ -68,18 +68,23 @@ We are planning to introduce more checks:
   - [x] Use Xsd from disk
   - [x] Use relevant Xsd from resource
 - [ ] IFC Schema check 
-	- [ ] IfcTypeNames
-		- [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
-		- [x] Simple type names are audited
-		- [ ] More complex case of type match need to be audited
-		  - [ ] Regex matches
-		  - [ ] Multiple values allowed
-	- [ ] Attribute names
+	- [x] Cleanup of old auditing logic (based on pure xml)
+	- [ ] IfcEntity
+		- [ ] Predefined types
+			- [ ] Predefined types Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
+		- [x] IfcTypeNames
+			- [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
+			- [x] Simple type names are audited
+			- [x] More complex case of type match need to be audited
+			  - [x] Regex matches
+			  - [X] Multiple values allowed
+	- [x] Attribute names
 		- [x] Attribute Names are hardcoded in the library
 		- [x] Simple attribute names are audited
-		- [ ] More complex case of type match need to be audited
-		  - [ ] Regex matches
-		  - [ ] Multiple values allowed
+		- [x] More complex case of type match need to be audited
+		  - [x] Regex matches
+		  - [x] Multiple values allowed
+	
 - [ ] PSets 
   - [ ] Standard PSet Names for types
 	- [ ] Includes IFC type inheritance

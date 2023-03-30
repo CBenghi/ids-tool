@@ -41,6 +41,9 @@
     <None Update="InvalidFiles\InvalidIfcOccurs.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="InvalidFiles\InvalidIfcEntityPattern.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="InvalidFiles\InvalidIfcVersion.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

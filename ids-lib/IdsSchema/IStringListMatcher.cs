@@ -9,6 +9,6 @@ namespace IdsLib.IdsSchema
 {
     internal interface IStringListMatcher
     {
-        Audit.Status DoesMatch(IEnumerable<string> strings, ILogger? logger, out IEnumerable<string> matches, string listToMatchName);
+        Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string nameOfListToMatch);
     }
 }

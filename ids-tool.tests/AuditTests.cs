@@ -30,12 +30,12 @@ public class AuditTests : BuildingSmartRepoFiles
         LoggerAndAuditHelpers.OmitContentAudit(f, XunitOutputHelper, Audit.Status.Ok, 0);
     }
 
-
     [Theory]
     [InlineData("InvalidFiles/InvalidIfcVersion.ids", 2, Audit.Status.IdsStructureError)]
     [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 1, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidEntityNames.ids", 3, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidAttributeNames.ids", 2, Audit.Status.IdsContentError)]
+    [InlineData("InvalidFiles/InvalidIfcEntityPattern.ids", 4, Audit.Status.IdsContentError)]
     public void FullAuditFail(string path, int numErr, Audit.Status status)
     {
         var f = new FileInfo(path);

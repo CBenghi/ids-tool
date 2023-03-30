@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace IdsLib.IfcSchema;
 
+[DebuggerDisplay("{IfcClassName} ({ValidSchemaVersions})")]
 internal class IfcClassInformation
 {
     public string IfcClassName { get; set; } = string.Empty;

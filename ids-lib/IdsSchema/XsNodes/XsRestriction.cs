@@ -16,28 +16,28 @@ internal class XsRestriction : BaseContext, IStringListMatcher
         baseAsString = reader.GetAttribute("base") ?? string.Empty;
     }
 
-    public Audit.Status DoesMatch(IEnumerable<string> stringsToMatch, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
     {
         matches =  Enumerable.Empty<string>();
-        if (baseAsString != "xs:string")
+        
+        if ( // todo: do we want to force the base requirement?
+            !string.IsNullOrWhiteSpace(baseAsString) &&
+            baseAsString != "xs:string"
+            )
             return IdsLoggerExtensions.ReportBadType(logger, this, baseAsString);
         var ret = IdsLib.Audit.Status.Ok;
         foreach (var child in Children)
         {
-            if (child is not IStringMatchValue imv)
+            // only matcher values are reported
+            if (child is not IStringListMatcher ismv)
             {
-                ret |= IdsLoggerExtensions.ReportBadMatcher(logger, child, "string");
+                // ret |= IdsLoggerExtensions.ReportBadMatcher(logger, child, "string");
+                // this would let xs:annotation pass with no issues
                 continue;
             }
-            var thisRes = imv.DoesMatch(stringsToMatch, logger, out var thisM);
-            if (!thisM.Any())
-            {
-                ret |= IdsLoggerExtensions.ReportInvalidClassMatcher(child, imv, logger, listToMatchName);
-            }
-            else
-            {
-                matches = matches.Union(thisM);
-            }
+            ret |= ismv.DoesMatch(candidateStrings, ignoreCase, logger, out var thisM, listToMatchName);
+            if (thisM.Any())
+                matches = matches.Union(thisM);   
         }
         return ret;
     }
