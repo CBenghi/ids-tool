@@ -100,6 +100,8 @@ internal class BaseContext
         return Children.Where(x => x.type == name);
     }
 
-
-
+    internal IStringListMatcher GetListMatcher()
+    {
+        return Children.OfType<IStringListMatcher>().FirstOrDefault();
+    }
 }

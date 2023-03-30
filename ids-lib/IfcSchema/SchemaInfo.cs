@@ -313,5 +313,15 @@ namespace IdsLib.IfcSchema
                 LinkTree();
             return Classes.Values.GetEnumerator();
         }
+
+        public static IEnumerable<SchemaInfo> GetSchemas(IfcSchemaVersions schemaVersions)
+        {
+            if (schemaVersions.HasFlag(IfcSchemaVersions.Ifc2x3))
+                yield return SchemaIfc2x3;
+            if (schemaVersions.HasFlag(IfcSchemaVersions.Ifc4))
+                yield return SchemaIfc4;
+            if (schemaVersions.HasFlag(IfcSchemaVersions.Ifc4x3))
+                yield return SchemaIfc4x3;
+        }
     }
 }

@@ -1,13 +1,15 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using IdsLib.IdsSchema.IdsNodes;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace IdsLib.IdsSchema;
 
 internal static class IdsLoggerExtensions
 {
-    internal static void ReportUnexpectedScenario(this ILogger? logger, string scenarioMessage, BaseContext context)
+    internal static Audit.Status ReportUnexpectedScenario(this ILogger? logger, string scenarioMessage, BaseContext context)
     {
         logger?.LogCritical("Unhandled scenario: {message} on element {tp} at line {line}, position {pos}.", scenarioMessage, context.type, context.StartLineNumber, context.StartLinePosition);
+        return Audit.Status.NotImplementedError;
     }
     internal static Audit.Status ReportInvalidOccurr(this ILogger? logger, BaseContext context, MinMaxOccurr m) 
     {
@@ -53,6 +55,12 @@ internal static class IdsLoggerExtensions
     internal static Audit.Status ReportInvalidClassMatcher(BaseContext context, string value, ILogger? logger, string listToMatchName)
     {
         logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` at line {line}, position {pos}.", value, context.type, listToMatchName, context.StartLineNumber, context.StartLinePosition);
+        return Audit.Status.IdsContentError;
+    }
+
+    internal static Audit.Status ReportInvalidDataConfiguration(ILogger? logger, BaseContext context, string message)
+    {
+        logger?.LogError("{message}, node `{tp}` at line {line}, position {pos}.", message, context.type, context.StartLineNumber, context.StartLinePosition);
         return Audit.Status.IdsContentError;
     }
 }
