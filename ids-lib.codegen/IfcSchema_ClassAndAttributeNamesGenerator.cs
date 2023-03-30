@@ -1,17 +1,15 @@
-﻿using IdsLib.codegen;
-using System.Text;
+﻿using System.Text;
 using Xbim.Common.Metadata;
 
-namespace IdsLib.Generator;
+namespace IdsLib.codegen;
 
-public class IfcSchemaGenerator
+public class IfcSchema_ClassAndAttributeNamesGenerator
 {
     internal static string Execute()
     {
-        var schemas = new[] { "Ifc2x3", "Ifc4", "Ifc4x3" };
         var classNames = new Dictionary<string, List<string>>();
         var attNames = new Dictionary<string, List<string>>();
-        foreach (var schema in schemas)
+        foreach (var schema in Program.schemas)
         {
             System.Reflection.Module module = SchemaHelper.GetModule(schema);
             var metaD = ExpressMetaData.GetMetadata(module);
@@ -72,7 +70,7 @@ using System.Collections.Generic;
 
 namespace IdsLib.IfcSchema
 {
-    internal partial class SchemaInfo
+    public partial class SchemaInfo
     {
         /// <summary>
         /// The names of classes across all schemas.

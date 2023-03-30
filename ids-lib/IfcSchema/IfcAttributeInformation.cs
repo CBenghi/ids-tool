@@ -2,7 +2,7 @@
 
 namespace IdsLib.IfcSchema;
 
-internal class IfcAttributeInformation
+public class IfcAttributeInformation
 {
     public string IfcAttributeName { get; set; }
     public IfcSchemaVersions ValidSchemaVersions { get; set; } = IfcSchemaVersions.IfcNoVersion;

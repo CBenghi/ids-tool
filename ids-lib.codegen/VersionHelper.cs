@@ -1,6 +1,6 @@
 ﻿using Xbim.Common;
 
-namespace IdsLib.Generator;
+namespace IdsLib.codegen;
 
 internal static class VersionHelper
 {

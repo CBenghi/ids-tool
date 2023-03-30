@@ -4,7 +4,7 @@ using System.Diagnostics;
 namespace IdsLib.IfcSchema;
 
 [DebuggerDisplay("{IfcClassName} ({ValidSchemaVersions})")]
-internal class IfcClassInformation
+public class IfcClassInformation
 {
     public string IfcClassName { get; set; } = string.Empty;
     public IfcSchemaVersions ValidSchemaVersions { get; set; } = IfcSchemaVersions.IfcNoVersion;

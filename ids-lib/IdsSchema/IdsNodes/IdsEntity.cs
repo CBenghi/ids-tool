@@ -26,23 +26,24 @@ internal class IdsEntity : BaseContext
             return IdsLib.Audit.Status.IdsContentError;
         }
         var requiredSchemaVersions = spec.SchemaVersions;
-        var names = GetChildNodes("name");
+        var name = GetChildNodes("name").FirstOrDefault();
+
+        // one child must be a valid string matcher
+        var sm = name.Children.OfType<IStringListMatcher>().FirstOrDefault();
+        if (sm is null)
+            return IdsLoggerExtensions.ReportNoStringMatcher(logger, this, "name");
+        var ValidClassNames = SchemaInfo.AllClasses
+            .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
+            .Select(y => y.IfcClassName.ToUpperInvariant());
+        var ret = sm.DoesMatch(ValidClassNames, false, logger, out var validClasses, "entity names");
+
+        // predefined types have to match the set of the types that are
+        // valid across all schemas of the specification
+        // 
         var type = GetChildNodes("predefinedType");
 
-        var ret = IdsLib.Audit.Status.Ok;
-        foreach (var name in names)
-        {
-            // the first child must be a valid string matcher
-            if (!name.Children.Any())
-                return IdsLoggerExtensions.ReportNoStringMatcher(logger, this, "name");
-            if (name.Children[0] is not IStringListMatcher sm)
-                return IdsLoggerExtensions.ReportInvalidStringMatcher(logger, name.Children[0], "name");
-            var ValidClassNames = SchemaInfo.AllClasses
-                .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
-                .Select(y => y.IfcClassName.ToUpperInvariant());
-            var result = sm.DoesMatch(ValidClassNames, false, logger, out var matches, "entity names");
-            ret |= result;
-        }
+
+
         return ret;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace IdsLib.Generator;
+namespace IdsLib.codegen;
 
 internal static class SchemaHelper
 {
