@@ -62,48 +62,46 @@ If no option is specificed all available audits are performed on the IDS files.
 
 ## Roadmap
 
-We are planning to introduce more checks:
+We are planning to a number of audits (checked ones are implemented)
 
 - [x] XSD Schema check
   - [x] Use Xsd from disk
   - [x] Use relevant Xsd from resource
-- [ ] IFC Schema check 
-	- [x] Cleanup of old auditing logic (based on pure xml)
-	- [ ] IfcEntity
-		- [ ] Predefined types
-			- [ ] Predefined types Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
-		- [x] IfcTypeNames
-			- [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
-			- [x] Simple type names are audited
-			- [x] More complex case of type match need to be audited
-			  - [x] Regex matches
-			  - [X] Multiple values allowed
-	- [x] Attribute names
-		- [x] Attribute Names are hardcoded in the library
-		- [x] Simple attribute names are audited
-		- [x] More complex case of type match need to be audited
-		  - [x] Regex matches
-		  - [x] Multiple values allowed
-	
-- [ ] PSets 
-  - [ ] Standard PSet Names for types
-	- [ ] Includes IFC type inheritance
-  - [ ] Pset name validity -> No custom "PSET_*"
-- [ ] Cardinality
-  - [ ] Context
-    - [x] For Specification
-	- [ ] For facets
-		- [ ] partOf
-		- [ ] classification
-		- [ ] attribute
-		- [ ] property
-		- [ ] material
-  - Audit types
-    - [x] Min and Max values are intrinsically valid
-	- [ ] Min and Max values are limited to agreed patterns
-
-    
-
+- [ ] IFC Schema check (individual facets)
+  - [x] Cleanup of old auditing logic (based on pure xml)
+  - [x] IfcEntity
+    - [ ] Predefined types
+      - [x] Predefined types Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
+      - [x] Prefefined types are tested against values provided from the schema.
+      - [x] Meaningful test cases
+    - [x] IfcTypeNames
+      - [x] IfcType Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
+      - [x] Simple type names are audited
+      - [x] More complex case of type match need to be audited
+        - [x] Regex matches
+        - [x] Multiple values allowed
+    - [x] Attribute names
+      - [x] Attribute Names are hardcoded in the library
+      - [x] Simple attribute names are audited
+      - [x] More complex case of type match need to be audited
+        - [x] Regex matches
+        - [x] Multiple values allowed	
+  - [ ] Measures
+  - [ ] PSets 
+    - [ ] Standard PSet Names for types
+      - [ ] Includes IFC type inheritance
+    - [ ] Pset name validity -> No custom "PSET_*"
+  - [ ] Cardinality For facets
+    - [ ] partOf
+    - [ ] classification
+    - [ ] attribute
+    - [ ] property
+    - [ ] material
 - [ ] Measures
   - [ ] optional but if a value is provided then it needs to be checked
 - [ ] DoorLiningProperties - discuss requirements
+- [ ] Specification checks 
+  - [ ] Coherence between applicability and requirements
+  - [ ] Cardinality
+    - [x] Min and Max values are intrinsically valid
+    - [ ] Min and Max values are restricted to agreed patterns
