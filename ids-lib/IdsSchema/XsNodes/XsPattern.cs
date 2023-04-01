@@ -30,7 +30,7 @@ internal class XsPattern : BaseContext, IStringListMatcher
             matches = candidateStrings.Where(x => compiledCaseSensitiveRegex!.IsMatch(x)).ToList();
         return !matches.Any()
             ? IdsLoggerExtensions.ReportInvalidClassMatcher(this, pattern, logger, listToMatchName)
-            : IdsLib.Audit.Status.Ok;
+            : Audit.Status.Ok;
     }
 
     private Regex? compiledCaseSensitiveRegex;

@@ -24,14 +24,14 @@ internal class XsLength : BaseContext, IStringListMatcher
         }
         matches = candidateStrings.Where(x=>x.Length == len).ToList();
         return matches.Any()
-           ? IdsLib.Audit.Status.Ok
-           : IdsLib.Audit.Status.IdsContentError;
+           ? Audit.Status.Ok
+           : Audit.Status.IdsContentError;
     }
 
 
-    protected internal override Audit.Status Audit(ILogger? logger)
+    protected internal override Audit.Status PerformAudit(ILogger? logger)
     {
         Debug.WriteLine($"Children: {Children.Count}");
-        return base.Audit(logger);
+        return base.PerformAudit(logger);
     }
 }

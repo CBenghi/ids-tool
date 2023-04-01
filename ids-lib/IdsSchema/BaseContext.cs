@@ -45,10 +45,10 @@ internal class BaseContext
     /// The Audit method of the base context always succeeds
     /// </summary>
     /// <param name="logger">unused in the base class</param>
-    /// <returns><see cref="IdsLib.Audit.Status.Ok"/> in all circumstances, only overridden implementation determine failure behaviours</returns>
-    internal protected virtual Audit.Status Audit(ILogger? logger)
+    /// <returns><see cref="Audit.Status.Ok"/> in all circumstances, only overridden implementation determine failure behaviours</returns>
+    internal protected virtual Audit.Status PerformAudit(ILogger? logger)
     {
-        return IdsLib.Audit.Status.Ok;
+        return Audit.Status.Ok;
     }
 
     internal protected virtual void SetContent(string contentString)
@@ -88,7 +88,11 @@ internal class BaseContext
             // found
             nodes.Add(start.Parent);
             if (typeNames.Length > 1) // more to search
+#if NETSTANDARD2_0
                 return TryGetUpperNodes(start.Parent, ref nodes, typeNames.Slice(1));
+#else
+                return TryGetUpperNodes(start.Parent, ref nodes, typeNames[1..]);
+#endif
             return true; // all found
         }
         // not found, search on the parent, instead
@@ -100,7 +104,7 @@ internal class BaseContext
         return Children.Where(x => x.type == name);
     }
 
-    internal IStringListMatcher GetListMatcher()
+    internal IStringListMatcher? GetListMatcher()
     {
         return Children.OfType<IStringListMatcher>().FirstOrDefault();
     }

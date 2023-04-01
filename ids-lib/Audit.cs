@@ -150,7 +150,7 @@ public static partial class Audit
                         if (!reader.IsEmptyElement)
                             elementsStack.Push(newContext);
                         else
-                            contentStatus |= newContext.Audit(logger); // invoking audit empty element
+                            contentStatus |= newContext.PerformAudit(logger); // invoking audit empty element
                         current = newContext; 
                         break;
                     case XmlNodeType.Attribute:
@@ -164,7 +164,7 @@ public static partial class Audit
                         Debug.WriteLine($"End Element {reader.LocalName}");
                         var closing = elementsStack.Pop();
                         Debug.WriteLine($"  auditing {closing.type} on end element");
-                        contentStatus |= closing.Audit(logger); // invoking audit on end of element
+                        contentStatus |= closing.PerformAudit(logger); // invoking audit on end of element
                         break;
                     default:
                         Debug.WriteLine("Other node {0} with value '{1}'.", reader.NodeType, reader.Value);

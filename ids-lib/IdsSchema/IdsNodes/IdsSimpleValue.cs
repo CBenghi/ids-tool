@@ -25,6 +25,6 @@ internal partial class IdsSimpleValue : BaseContext, IStringListMatcher
         matches = candidateStrings.Where(x => x.Equals(Content, compCase)).ToList();
         if (!matches.Any())
             return IdsLoggerExtensions.ReportInvalidClassMatcher(this, Content, logger, listToMatchName);
-        return IdsLib.Audit.Status.Ok;
+        return Audit.Status.Ok;
     }
 }

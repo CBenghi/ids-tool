@@ -17,9 +17,14 @@ public class IdsXmlHelpers
         {
             // ids
             "specification" => new IdsSpecification(reader, logger),
+            "requirements" => new IdsRequirements(reader),
             "simpleValue" => new IdsSimpleValue(reader),
             "entity" => new IdsEntity(reader),
             "attribute" => new IdsAttribute(reader),
+            "partOf" => new IdsFacet(reader),
+            "classification" => new IdsFacet(reader),
+            "property" => new IdsFacet(reader),
+            "material" => new IdsFacet(reader),
             // xs
             "restriction" => new XsRestriction(reader),
             "enumeration" => new XsEnumeration(reader),

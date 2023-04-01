@@ -25,7 +25,7 @@ internal class XsRestriction : BaseContext, IStringListMatcher
             baseAsString != "xs:string"
             )
             return IdsLoggerExtensions.ReportBadType(logger, this, baseAsString);
-        var ret = IdsLib.Audit.Status.Ok;
+        var ret = Audit.Status.Ok;
         foreach (var child in Children)
         {
             // only matcher values are reported
@@ -44,9 +44,9 @@ internal class XsRestriction : BaseContext, IStringListMatcher
 
    
 
-    protected internal override Audit.Status Audit(ILogger? logger)
+    protected internal override Audit.Status PerformAudit(ILogger? logger)
     {
         Debug.WriteLine($"Children: {Children.Count}");
-        return base.Audit(logger);
+        return base.PerformAudit(logger);
     }
 }

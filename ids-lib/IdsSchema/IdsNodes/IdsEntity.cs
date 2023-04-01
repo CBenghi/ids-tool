@@ -14,30 +14,30 @@ internal class IdsEntity : BaseContext
     {
     }
 
-    internal protected override Audit.Status Audit(ILogger? logger)
+    internal protected override Audit.Status PerformAudit(ILogger? logger)
     {
         if (!TryGetUpperNodes(this, SpecificationArray, out var nodes))
         {
             IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Missing specification for entity.", this);
-            return IdsLib.Audit.Status.IdsStructureError;
+            return Audit.Status.IdsStructureError;
         }
         if (nodes[0] is not IdsSpecification spec)
         {
             IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Invalid specification for entity.", this);
-            return IdsLib.Audit.Status.IdsContentError;
+            return Audit.Status.IdsContentError;
         }
         var requiredSchemaVersions = spec.SchemaVersions;
         var name = GetChildNodes("name").FirstOrDefault();
 
         // one child must be a valid string matcher
-        var sm = name.GetListMatcher();
+        var sm = name?.GetListMatcher();
         if (sm is null)
             return IdsLoggerExtensions.ReportNoStringMatcher(logger, this, "name");
         var ValidClassNames = SchemaInfo.AllClasses
             .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
             .Select(y => y.IfcClassName.ToUpperInvariant());
         var ret = sm.DoesMatch(ValidClassNames, false, logger, out var possibleClasses, "entity names");
-        if (ret != IdsLib.Audit.Status.Ok)   
+        if (ret != Audit.Status.Ok)   
             return ret;
         
 

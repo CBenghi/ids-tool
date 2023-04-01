@@ -14,8 +14,8 @@ internal class IdsSpecification : BaseContext
         get => parent;
         set
         {
-            // we are not storing in this in the parent children, to save memory,
-            // because it's not needed at this stage
+            // we are not storing a specification node in the parent's children to reduce memory footprint,
+            // becasue this allows the GC to collect a specification, when dereferenced
             // 
             parent = value;
         }
@@ -29,13 +29,13 @@ internal class IdsSpecification : BaseContext
         SchemaVersions = vrs.GetSchemaVersions(this, logger);
     }
 
-    internal protected override Audit.Status Audit(ILogger? logger)
+    internal protected override Audit.Status PerformAudit(ILogger? logger)
     {
-        var ret = IdsLib.Audit.Status.Ok;
-        if (minMaxOccurr.Audit() != IdsLib.Audit.Status.Ok)
+        var ret = Audit.Status.Ok;
+        if (minMaxOccurr.Audit() != Audit.Status.Ok)
             ret |= logger.ReportInvalidOccurr(this, minMaxOccurr);
         if (SchemaVersions == IfcSchemaVersions.IfcNoVersion)
             ret |= logger.ReportInvalidSchemaVersion(SchemaVersions, this);
-        return base.Audit(logger) | ret;
+        return base.PerformAudit(logger) | ret;
     }
 }

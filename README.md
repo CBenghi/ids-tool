@@ -86,17 +86,17 @@ We are planning to a number of audits (checked ones are implemented)
       - [x] More complex case of type match need to be audited
         - [x] Regex matches
         - [x] Multiple values allowed	
-  - [ ] Measures
   - [ ] PSets 
     - [ ] Standard PSet Names for types
       - [ ] Includes IFC type inheritance
     - [ ] Pset name validity -> No custom "PSET_*"
-  - [ ] Cardinality For facets
-    - [ ] partOf
-    - [ ] classification
-    - [ ] attribute
-    - [ ] property
-    - [ ] material
+    - [ ] Measures
+  - [x] Cardinality for facets (in requirements)
+    - [x] partOf
+    - [x] classification
+    - [x] attribute
+    - [x] property
+    - [x] material
 - [ ] Measures
   - [ ] optional but if a value is provided then it needs to be checked
 - [ ] DoorLiningProperties - discuss requirements
