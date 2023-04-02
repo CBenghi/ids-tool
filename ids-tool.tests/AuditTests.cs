@@ -42,4 +42,12 @@ public class AuditTests : BuildingSmartRepoFiles
         var f = new FileInfo(path);
         LoggerAndAuditHelpers.FullAudit(f, XunitOutputHelper, status, numErr);
     }
+
+    [Theory]
+    [InlineData("ValidFiles/nested_entity.ids")]
+    public void FullAuditPass(string path)
+    {
+        var f = new FileInfo(path);
+        LoggerAndAuditHelpers.FullAudit(f, XunitOutputHelper, Audit.Status.Ok, 0);
+    }
 }

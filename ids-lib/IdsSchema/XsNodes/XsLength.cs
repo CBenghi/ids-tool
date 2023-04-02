@@ -31,7 +31,7 @@ internal class XsLength : BaseContext, IStringListMatcher
 
     protected internal override Audit.Status PerformAudit(ILogger? logger)
     {
-        Debug.WriteLine($"Children: {Children.Count}");
+        // Debug.WriteLine($"Children: {Children.Count}");
         return base.PerformAudit(logger);
     }
 }

@@ -14,9 +14,7 @@ public partial class Program
         using var loggerFactory = LoggerFactory.Create(builder =>
         {
             builder
-            .AddFilter("Microsoft", LogLevel.Warning)
-            .AddFilter("System", LogLevel.Warning)
-            .AddFilter("LoggingConsoleApp.Program", LogLevel.Information)
+            .AddFilter("idsTool.Program", LogLevel.Information)
             .AddSimpleConsole(options =>
             {
                 options.SingleLine = true;

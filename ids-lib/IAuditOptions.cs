@@ -27,4 +27,10 @@ public interface IAuditOptions
     /// If set to true skips the audit of the semantic aspects of the IDS.
     /// </summary>
     bool OmitIdsContentAudit { get; set; }
+    /// <summary>
+    /// Regex applied to file name to omit the audit of the semantic aspects of the IDS.
+    /// This can be useful to omit strict audit of files that are known to have content issues 
+    /// (e.g. failing documentation of the buildingSMART IDS website).
+    /// </summary>
+    string OmitIdsContentAuditPattern { get; set; }
 }

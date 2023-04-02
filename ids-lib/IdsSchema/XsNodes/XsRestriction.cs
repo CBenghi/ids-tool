@@ -42,11 +42,9 @@ internal class XsRestriction : BaseContext, IStringListMatcher
         return ret;
     }
 
-   
-
     protected internal override Audit.Status PerformAudit(ILogger? logger)
     {
-        Debug.WriteLine($"Children: {Children.Count}");
+        // Debug.WriteLine($"Children: {Children.Count}");
         return base.PerformAudit(logger);
     }
 }

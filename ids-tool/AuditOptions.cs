@@ -39,5 +39,11 @@ public class AuditOptions : IAuditOptions
     /// <inheritdoc/>
     /// </summary>
     [Option('c', "omitContent", Required = false, HelpText = "Skips the audit of the agreed limitation of IDS contents.")]
-    public bool OmitIdsContentAudit { get; set; } 
+    public bool OmitIdsContentAudit { get; set; }
+
+    /// <summary>
+    /// <inheritdoc/>
+    /// </summary>
+    [Option('p', "omitContentAuditPattern", Default = "", Required = false, HelpText = "Regex applied to file name to omit the audit of the semantic aspects of the IDS.")]
+    public string OmitIdsContentAuditPattern { get; set; } = string.Empty;
 }

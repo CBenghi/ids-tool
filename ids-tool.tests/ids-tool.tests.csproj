@@ -71,6 +71,9 @@
     <None Update="ValidFiles\IDS_aachen_example.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="ValidFiles\nested_entity.ids">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ValidFiles\Restriction\enumeration.ids">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

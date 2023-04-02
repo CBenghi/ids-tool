@@ -34,32 +34,53 @@ public static partial class Audit
         if (string.IsNullOrEmpty(opts.InputSource) && !opts.SchemaFiles.Any())
         {
             // no IDS and no schema => nothing to do
-            logger?.LogWarning("No audits are required, with the optins passed.");
-            retvalue = Status.InvalidOptionsError;
+            logger?.LogWarning("No audits are required, with the options passed.");
+            retvalue |= Status.InvalidOptionsError;
         }
         else if (string.IsNullOrEmpty(opts.InputSource)) 
         {
             // No ids, but we have a schemafile => check the schema itself
             opts.AuditSchemaDefinition = true;
         }
-        else
+        if (!string.IsNullOrWhiteSpace(opts.OmitIdsContentAuditPattern))
         {
-            // just inform on the config
-            var auditsList = new List<string>();
-            if (!string.IsNullOrEmpty(opts.InputSource))
-                auditsList.Add("Ids structure");
-            if (opts.AuditSchemaDefinition)
-                auditsList.Add("Xsd schemas correctness");
-            if (!opts.OmitIdsContentAudit)
-                auditsList.Add("Ids content");
-            if (!auditsList.Any())
+            try
             {
-                logger?.LogError("Invalid options.");
-                return Status.InvalidOptionsError;
+                // we are trying to see if the 
+                var r = new Regex(opts.OmitIdsContentAuditPattern);
             }
-            logger?.LogInformation("Auditing: {audits}.", string.Join(", ", auditsList.ToArray()));
+            catch (ArgumentException)
+            {
+                logger?.LogWarning("Invalid OmitIdsContentAuditPattern `{pattern}`.", opts.OmitIdsContentAuditPattern);
+                retvalue |= Status.InvalidOptionsError;
+            }
+        }
+        if (retvalue.HasFlag(Status.InvalidOptionsError))
+        {
+            logger?.LogError("No audit performed.", opts.OmitIdsContentAuditPattern);
+            return retvalue;
         }
 
+        var auditsList = new List<string>();
+        if (!string.IsNullOrEmpty(opts.InputSource))
+            auditsList.Add("Ids structure");
+        if (opts.AuditSchemaDefinition)
+            auditsList.Add("Xsd schemas correctness");
+        if (!opts.OmitIdsContentAudit)
+        {
+            if (!string.IsNullOrWhiteSpace(opts.OmitIdsContentAuditPattern))
+                auditsList.Add("Ids content (omitted on regex match)");
+            else
+                auditsList.Add("Ids content");
+        }
+        if (!auditsList.Any())
+        {
+            logger?.LogError("Invalid options.");
+            return Status.InvalidOptionsError;
+        }
+        // inform on the config
+        logger?.LogInformation("Auditing: {audits}.", string.Join(", ", auditsList.ToArray()));
+        
         // start audit
         if (opts.AuditSchemaDefinition)
         {
@@ -129,15 +150,20 @@ public static partial class Audit
         var elementsStack = new Stack<BaseContext>(); // we prepare the stack to evaluate the IDS content
         BaseContext? current = null;
         Status contentStatus = Status.Ok;
+
+        bool omitContent = c.Options.OmitIdsContentAudit
+            ||
+            (!string.IsNullOrWhiteSpace(c.Options.OmitIdsContentAuditPattern) && Regex.IsMatch(theFile.FullName, c.Options.OmitIdsContentAuditPattern, RegexOptions.IgnoreCase));
+
         while (await reader.ReadAsync()) // the loop reads the entire file to trigger validation events.
         {
             cntRead++;
-            if (!c.Options.OmitIdsContentAudit) // content audit can be omitted, but the while loop is still executed
+            if (!omitContent) // content audit can be omitted, but the while loop is still executed
             {
                 switch (reader.NodeType)
                 {
                     case XmlNodeType.Element:
-                        Debug.WriteLine($"Start Element {reader.LocalName}");
+                        // Debug.WriteLine($"Start Element {reader.LocalName}");
                         var newContext = IdsXmlHelpers.GetContextFromElement(reader, logger); // this is always not null
 #if NETSTANDARD2_0
                         if (elementsStack.Count > 0)
@@ -153,21 +179,19 @@ public static partial class Audit
                             contentStatus |= newContext.PerformAudit(logger); // invoking audit empty element
                         current = newContext; 
                         break;
-                    case XmlNodeType.Attribute:
-                        Debug.WriteLine($"Attribute Node: {reader.GetValueAsync().Result}");
-                        break;
+                    
                     case XmlNodeType.Text:
                         // Debug.WriteLine($"  Text Node: {reader.GetValueAsync().Result}");
                         current!.SetContent(reader.GetValueAsync().Result);
                         break;
                     case XmlNodeType.EndElement:
-                        Debug.WriteLine($"End Element {reader.LocalName}");
+                        // Debug.WriteLine($"End Element {reader.LocalName}");
                         var closing = elementsStack.Pop();
-                        Debug.WriteLine($"  auditing {closing.type} on end element");
+                        // Debug.WriteLine($"  auditing {closing.type} on end element");
                         contentStatus |= closing.PerformAudit(logger); // invoking audit on end of element
                         break;
                     default:
-                        Debug.WriteLine("Other node {0} with value '{1}'.", reader.NodeType, reader.Value);
+                        // Debug.WriteLine("Other node {0} with value '{1}'.", reader.NodeType, reader.Value);
                         break;
                 }
             }
