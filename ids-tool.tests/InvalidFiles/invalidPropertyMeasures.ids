@@ -17,20 +17,42 @@
                 </ids:entity>
             </ids:applicability>
             <ids:requirements>
-                <ids:property maxOccurs="unbounded">
+				<!-- not a valid measure class -->
+                <ids:property maxOccurs="unbounded" measure="IfcDoor">
                     <ids:propertySet>
                         <ids:simpleValue>ePset_Pipe</ids:simpleValue>
                     </ids:propertySet>
                     <ids:name>
                         <ids:simpleValue>medium</ids:simpleValue>
                     </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="cold water"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
                 </ids:property>
+				<!-- not a valid measure class -->
+				<ids:property maxOccurs="unbounded" measure="IFCDOOR">
+					<ids:propertySet>
+						<ids:simpleValue>ePset_Pipe</ids:simpleValue>
+					</ids:propertySet>
+					<ids:name>
+						<ids:simpleValue>medium</ids:simpleValue>
+					</ids:name>
+				</ids:property>
+				<!-- valid measure class for schema -->
+				<ids:property maxOccurs="unbounded" measure="IfcText">
+					<ids:propertySet>
+						<ids:simpleValue>ePset_Pipe</ids:simpleValue>
+					</ids:propertySet>
+					<ids:name>
+						<ids:simpleValue>medium</ids:simpleValue>
+					</ids:name>
+				</ids:property>
+				<!-- Invalid measure class for schema -->
+				<ids:property maxOccurs="unbounded" measure="IfcAreaDensityMeasure">
+					<ids:propertySet>
+						<ids:simpleValue>ePset_Pipe</ids:simpleValue>
+					</ids:propertySet>
+					<ids:name>
+						<ids:simpleValue>medium</ids:simpleValue>
+					</ids:name>
+				</ids:property>
             </ids:requirements>
         </ids:specification>
     </ids:specifications>

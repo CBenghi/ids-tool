@@ -45,7 +45,7 @@ public class AuditTests : BuildingSmartRepoFiles
             OmitIdsContentAuditPattern = @"\\fail-",
             SchemaFiles = new[] { "/bsFiles/ids093.xsd" }
         };
-        var auditResult = LoggerAndAuditHelpers.AuditWithOptions(c, XunitOutputHelper, null, -1);
+        var auditResult = LoggerAndAuditHelpers.AuditWithoutExpectations(c, XunitOutputHelper);
         Skip.If(auditResult != Audit.Status.Ok);
         auditResult.Should().Be(Audit.Status.Ok);
     }
@@ -57,6 +57,7 @@ public class AuditTests : BuildingSmartRepoFiles
     [InlineData("InvalidFiles/InvalidAttributeNames.ids", 2, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidIfcEntityPattern.ids", 4, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidIfcEntityPredefinedType.ids", 5, Audit.Status.IdsContentError)]
+    [InlineData("InvalidFiles/invalidPropertyMeasures.ids", 3, Audit.Status.IdsContentError)]
     public void FullAuditFail(string path, int numErr, Audit.Status status)
     {
         var f = new FileInfo(path);

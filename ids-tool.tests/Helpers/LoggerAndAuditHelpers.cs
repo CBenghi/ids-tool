@@ -14,6 +14,11 @@ namespace idsTool.tests.Helpers;
 
 internal static class LoggerAndAuditHelpers
 {
+    internal static Audit.Status AuditWithoutExpectations(AuditOptions c, ITestOutputHelper OutputHelper)
+    {
+        return AuditWithOptions(c, OutputHelper, null, -1);
+    }
+
     internal static Audit.Status AuditWithOptions(AuditOptions c, ITestOutputHelper OutputHelper, Audit.Status? expectedOutcome = Audit.Status.Ok, int expectedWarnAndErrors = 0)
     {
         ILogger logg = GetXunitLogger(OutputHelper);

@@ -16,7 +16,7 @@ internal class XsRestriction : BaseContext, IStringListMatcher
         baseAsString = reader.GetAttribute("base") ?? string.Empty;
     }
 
-    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
     {
         matches =  Enumerable.Empty<string>();
         
@@ -35,7 +35,7 @@ internal class XsRestriction : BaseContext, IStringListMatcher
                 // this would let xs:annotation pass with no issues
                 continue;
             }
-            ret |= ismv.DoesMatch(candidateStrings, ignoreCase, logger, out var thisM, listToMatchName);
+            ret |= ismv.DoesMatch(candidateStrings, ignoreCase, logger, out var thisM, listToMatchName, schemaContext);
             if (thisM.Any())
                 matches = matches.Union(thisM);   
         }

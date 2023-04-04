@@ -36,7 +36,7 @@ internal class IdsEntity : BaseContext
         var ValidClassNames = SchemaInfo.AllClasses
             .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
             .Select(y => y.IfcClassName.ToUpperInvariant());
-        var ret = sm.DoesMatch(ValidClassNames, false, logger, out var possibleClasses, "entity names");
+        var ret = sm.DoesMatch(ValidClassNames, false, logger, out var possibleClasses, "entity names", requiredSchemaVersions);
         if (ret != Audit.Status.Ok)   
             return ret;
         
@@ -71,7 +71,7 @@ internal class IdsEntity : BaseContext
         if (possiblePredefined == null)
             ret |= IdsLoggerExtensions.ReportInvalidDataConfiguration(logger, this, "No valid predefinedType configuration for Entity");
         else
-            ret |= predefinedTypeMatcher.DoesMatch(possiblePredefined, false, logger, out var matches, "PredefinedTypes");
+            ret |= predefinedTypeMatcher.DoesMatch(possiblePredefined, false, logger, out var matches, "PredefinedTypes", requiredSchemaVersions);
         
         return ret;
     }

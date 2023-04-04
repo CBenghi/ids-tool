@@ -23,7 +23,7 @@ public class IdsXmlHelpers
             "attribute" => new IdsAttribute(reader),
             "partOf" => new IdsFacet(reader),
             "classification" => new IdsFacet(reader),
-            "property" => new IdsFacet(reader),
+            "property" => new IdsProperty(reader),
             "material" => new IdsFacet(reader),
             // xs
             "restriction" => new XsRestriction(reader),

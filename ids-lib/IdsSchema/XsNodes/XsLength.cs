@@ -15,12 +15,12 @@ internal class XsLength : BaseContext, IStringListMatcher
         value = reader.GetAttribute("value") ?? string.Empty;
     }
 
-    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
     {
         if (!int.TryParse(value, out var len)) 
         {
             matches = Enumerable.Empty<string>();   
-            return IdsLoggerExtensions.ReportInvalidClassMatcher(this, value, logger, listToMatchName);
+            return IdsLoggerExtensions.ReportInvalidListMatcher(this, value, logger, listToMatchName, schemaContext);
         }
         matches = candidateStrings.Where(x=>x.Length == len).ToList();
         return matches.Any()

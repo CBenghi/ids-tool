@@ -9,13 +9,14 @@ namespace IdsLib.IdsSchema.XsNodes;
 
 internal class XsTotalDigits : BaseContext, IStringListMatcher
 {
-    private readonly string value;
+    // private readonly string value;
     public XsTotalDigits(XmlReader reader) : base(reader)
     {
-        value = reader.GetAttribute("value") ?? string.Empty;
+        // value might be useful for future implementations
+        // value = reader.GetAttribute("value") ?? string.Empty; 
     }
 
-    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
     {
         // totalDigits in invalid when it comes to string
         matches = Enumerable.Empty<string>();

@@ -7,7 +7,7 @@ public class IfcSchema_MeasureNamesGenerator
 {
     internal static string Execute()
     {
-        var measureNames = GetMeasureNames();
+        var measureNames = GetAllMeasureNames();
 
         var measureInfos = new Dictionary<string, List<string>>();
         var attNames = new Dictionary<string, List<string>>();
@@ -52,7 +52,20 @@ public class IfcSchema_MeasureNamesGenerator
         return source;
     }
 
-    private static IEnumerable<string> GetMeasureNames()
+    private static IEnumerable<string> GetAllMeasureNames()
+    {
+        return GetDocumentationMeasureNames().
+            Concat(GetExtraMeasureNames());
+    }
+
+    private static IEnumerable<string> GetExtraMeasureNames()
+    {
+        yield return "IfcText";
+        yield return "IfcLabel";
+        yield return "IfcThermalTransmittanceMeasure";
+    }
+
+    private static IEnumerable<string> GetDocumentationMeasureNames()
     {
         var markDown = File.ReadAllLines(@"buildingSMART\units.md");
         foreach (var line in markDown)

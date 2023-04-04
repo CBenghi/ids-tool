@@ -12,7 +12,7 @@ using Xunit;
 
 namespace idsTool.tests
 {
-    public class minMaxTests
+    public class MinMaxTests
     {
         [Fact]
         public void RequiredConfigurationValid()

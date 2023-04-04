@@ -53,9 +53,12 @@ internal static class IdsLoggerExtensions
         return Audit.Status.IdsContentError;
     }
 
-    internal static Audit.Status ReportInvalidClassMatcher(BaseContext context, string value, ILogger? logger, string listToMatchName)
+    internal static Audit.Status ReportInvalidListMatcher(BaseContext xmlContext, string value, ILogger? logger, string listToMatchName, IfcSchema.IfcSchemaVersions? schemaContext)
     {
-        logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` at line {line}, position {pos}.", value, context.type, listToMatchName, context.StartLineNumber, context.StartLinePosition);
+        if (schemaContext.HasValue)
+            logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` in the context of {schemaContext} at line {line}, position {pos}.", value, xmlContext.type, listToMatchName, schemaContext.Value, xmlContext.StartLineNumber, xmlContext.StartLinePosition);
+        else
+            logger?.LogError("Invalid value `{val}` in {tp} to match `{expected}` at line {line}, position {pos}.", value, xmlContext.type, listToMatchName, xmlContext.StartLineNumber, xmlContext.StartLinePosition);
         return Audit.Status.IdsContentError;
     }
 

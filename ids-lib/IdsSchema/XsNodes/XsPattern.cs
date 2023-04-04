@@ -17,19 +17,19 @@ internal class XsPattern : BaseContext, IStringListMatcher
         pattern = reader.GetAttribute("value") ?? string.Empty;
     }
 
-    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
     {
         if (!EnsureRegex(out var _, ignoreCase))
         {
             matches = new List<string>();
-            return IdsLoggerExtensions.ReportInvalidClassMatcher(this, pattern, logger, listToMatchName);
+            return IdsLoggerExtensions.ReportInvalidListMatcher(this, pattern, logger, listToMatchName, schemaContext);
         }
         if (ignoreCase)
             matches = candidateStrings.Where(x => compiledCaseInsensitiveRegex!.IsMatch(x)).ToList();
         else
             matches = candidateStrings.Where(x => compiledCaseSensitiveRegex!.IsMatch(x)).ToList();
         return !matches.Any()
-            ? IdsLoggerExtensions.ReportInvalidClassMatcher(this, pattern, logger, listToMatchName)
+            ? IdsLoggerExtensions.ReportInvalidListMatcher(this, pattern, logger, listToMatchName, schemaContext)
             : Audit.Status.Ok;
     }
 

@@ -4,14 +4,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Xml;
 
-namespace IdsLib.IdsSchema.XsNodes;
+namespace IdsLib.IdsSchema;
 
-internal class XsEnumeration : BaseContext, IStringListMatcher
+internal class StringListMatcher : IStringListMatcher
 {
     private readonly string value;
-    public XsEnumeration(XmlReader reader) : base(reader)
+    private readonly BaseContext context;
+    public StringListMatcher(string value, BaseContext context)
     {
-        value = reader.GetAttribute("value") ?? string.Empty;
+        this.value = value;
+        this.context = context;
     }
 
     public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
@@ -21,7 +23,7 @@ internal class XsEnumeration : BaseContext, IStringListMatcher
                     : System.StringComparison.Ordinal;
         matches = candidateStrings.Where(x => x.Equals(value, compCase)).ToList();
         if (!matches.Any())
-            return IdsLoggerExtensions.ReportInvalidListMatcher(this, value, logger, listToMatchName, schemaContext);
+            return IdsLoggerExtensions.ReportInvalidListMatcher(context, value, logger, listToMatchName, schemaContext);
         return Audit.Status.Ok;
     }
 }

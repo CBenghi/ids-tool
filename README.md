@@ -91,7 +91,10 @@ We are planning to a number of audits (checked ones are implemented)
       - [ ] Includes IFC type inheritance
     - [ ] Pset name validity -> No custom "PSET_*"
     - [ ] Measures
-        - [ ] If a value is provided then it needs to be checked
+        - [x] If a value is provided then it needs to be checked
+        - [x] Test cases added
+        - [ ] Discuss with IDS group: clarify the list of valid measures 
+        - [ ] Discuss with IDS group: clarify the case sensitivity logic (currently PascalCase based on Development files)
   - [x] Cardinality for facets (in requirements)
     - [x] partOf
     - [x] classification
@@ -101,6 +104,6 @@ We are planning to a number of audits (checked ones are implemented)
 - [ ] DoorLiningProperties - discuss requirements
 - [x] Cardinality
   - [x] Min and Max values are intrinsically valid (xml constraints)
-  - [x] Min and Max values are restricted to agreed patterns (ids implementation agreement)
+  - [x] Min and Max values are restricted to agreed patterns (IDS implementation agreement)
 - [ ] Specification checks 
   - [ ] Coherence between applicability and requirements

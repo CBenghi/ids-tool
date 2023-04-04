@@ -17,14 +17,14 @@ internal partial class IdsSimpleValue : BaseContext, IStringListMatcher
         Content = contentString ?? string.Empty;
     }     
 
-    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName)
+    public Audit.Status DoesMatch(IEnumerable<string> candidateStrings, bool ignoreCase, ILogger? logger, out IEnumerable<string> matches, string listToMatchName, IfcSchema.IfcSchemaVersions schemaContext)
     {
         var compCase = ignoreCase
             ? System.StringComparison.OrdinalIgnoreCase
             : System.StringComparison.Ordinal;
         matches = candidateStrings.Where(x => x.Equals(Content, compCase)).ToList();
         if (!matches.Any())
-            return IdsLoggerExtensions.ReportInvalidClassMatcher(this, Content, logger, listToMatchName);
+            return IdsLoggerExtensions.ReportInvalidListMatcher(this, Content, logger, listToMatchName, schemaContext);
         return Audit.Status.Ok;
     }
 }

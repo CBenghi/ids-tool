@@ -21,7 +21,7 @@
 				</ids:entity>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:property minOccurs="1" measure="IfcText">
+				<ids:property minOccurs="1">
 					<ids:propertySet>
 						<xs:restriction>
 							<xs:pattern value="anas.*"/>
@@ -47,7 +47,7 @@
 					</ids:system>
 				</ids:classification>
 				<!-- Ensure test for property facets -->
-				<ids:property minOccurs="4" maxOccurs="2" measure="String">
+				<ids:property minOccurs="4" maxOccurs="2">
 					<ids:propertySet>
 						<ids:simpleValue>Pset_WallCommon</ids:simpleValue>
 					</ids:propertySet>

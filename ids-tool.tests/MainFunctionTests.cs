@@ -1,7 +1,10 @@
-﻿using IdsTool;
+﻿using FluentAssertions;
+using idsTool.tests.Helpers;
+using IdsTool;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
+using Xunit.Abstractions;
 using static IdsLib.Audit;
 
 namespace idsTool.tests;
@@ -11,6 +14,12 @@ public class MainFunctionTests
     private const string schemaFile = @"bsFiles/ids093.xsd";
     private const string idsFile = @"bsFiles/IDS_ucms_prefab_pipes_IFC2x3.ids";
 
+    public MainFunctionTests(ITestOutputHelper outputHelper)
+    {
+        XunitOutputHelper = outputHelper;
+    }
+    private ITestOutputHelper XunitOutputHelper { get; }
+
     [Fact]
     public void CanRunProvidingSchema()
     {
@@ -19,10 +28,8 @@ public class MainFunctionTests
             SchemaFiles = new List<string> { schemaFile },
             InputSource = idsFile
         };
-
-        // to adjust once we fix the xml file in the other repo.
-        var ret = Run(c);
-        Assert.Equal(Status.Ok, ret);
+        var ret = LoggerAndAuditHelpers.AuditWithoutExpectations(c, XunitOutputHelper);
+        ret.Should().Be(Status.Ok);
     }
 
     [Fact]
@@ -32,10 +39,8 @@ public class MainFunctionTests
         {
             InputSource = idsFile
         };
-
-        // to adjust once we fix the xml file in the other repo.
-        var ret = Run(c);
-        Assert.Equal(Status.Ok, ret);
+        var ret = LoggerAndAuditHelpers.AuditWithoutExpectations(c, XunitOutputHelper);
+        ret.Should().Be(Status.Ok);
     }
 
     [Fact]
@@ -44,13 +49,12 @@ public class MainFunctionTests
         // prepare the file to delete in the end
         var tmp = Path.GetTempFileName();
         File.Copy(idsFile, tmp, true);
-
         var c = new AuditOptions
         {
             SchemaFiles = new List<string> { schemaFile },
             InputSource = tmp
         };
-        Run(c);
+        Run(c); // does not check results.
         File.Delete(tmp);
     }
 }

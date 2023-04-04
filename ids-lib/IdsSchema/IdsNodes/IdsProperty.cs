@@ -1,46 +1,48 @@
 ﻿using IdsLib.IfcSchema;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Linq;
 
 namespace IdsLib.IdsSchema.IdsNodes;
 
-internal class IdsAttribute : BaseContext, IIdsRequirementFacet
+internal class IdsProperty : BaseContext, IIdsRequirementFacet
 {
     private static readonly string[] SpecificationArray = { "specification" };
     private readonly MinMaxOccur minMaxOccurr;
-    public IdsAttribute(System.Xml.XmlReader reader) : base(reader)
+    private readonly IStringListMatcher? measureMatcher;
+    public IdsProperty(System.Xml.XmlReader reader) : base(reader)
     {
         minMaxOccurr = new MinMaxOccur(reader);
+        var measure = reader.GetAttribute("measure") ?? string.Empty;
+        if (!string.IsNullOrEmpty(measure))
+            measureMatcher = new StringListMatcher(measure, this);
+        else
+            measureMatcher = null;
     }
 
     internal protected override Audit.Status PerformAudit(ILogger? logger)
     {
         if (!TryGetUpperNodes(this, SpecificationArray, out var nodes))
         {
-            IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Missing specification for attribute.", this);
+            IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Missing specification for property.", this);
             return Audit.Status.IdsStructureError;
         }
         if (nodes[0] is not IdsSpecification spec)
         {
-            IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Invalid specification for attribute.", this);
+            IdsLoggerExtensions.ReportUnexpectedScenario(logger, "Invalid specification for property.", this);
             return Audit.Status.IdsContentError;
         }
         var requiredSchemaVersions = spec.SchemaVersions;
         var names = GetChildNodes("name");
         
         var ret = Audit.Status.Ok;
-        foreach (var name in names)
+        if (measureMatcher is not null)
         {
-            // the first child must be a valid string matcher
-            if (!name.Children.Any())
-                return IdsLoggerExtensions.ReportNoStringMatcher(logger, this, "name");
-            if (name.Children[0] is not IStringListMatcher sm)
-                return IdsLoggerExtensions.ReportInvalidStringMatcher(logger, name.Children[0], "name");
-            var ValidClassNames = SchemaInfo.AllAttributes
+            var validMeasureNames = SchemaInfo.AllMeasures
                 .Where(x => (x.ValidSchemaVersions & requiredSchemaVersions) == requiredSchemaVersions)
-                .Select(y => y.IfcAttributeName);
-            var result = sm.DoesMatch(ValidClassNames, false, logger, out var matches, "attribute names", requiredSchemaVersions);
+                .Select(y => y.IfcMeasureClassName);
+            var result = measureMatcher.DoesMatch(validMeasureNames, false, logger, out var matches, "measure names", requiredSchemaVersions);
             ret |= result;
         }
         return ret;
