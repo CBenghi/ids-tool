@@ -252,6 +252,7 @@ public static partial class Audit
     private static Status ProcessSingleFile(FileInfo theFile, AuditInfo c, ILogger? logger)
     {
         Status ret = Status.Ok;
+        logger?.LogInformation("Auditing file: `{filename}`.", theFile.FullName);
         ret |= AuditIdsComplianceAsync(c, theFile, logger).Result;
         return ret;
     }
@@ -269,7 +270,6 @@ public static partial class Audit
         var tally = 0;
         foreach (var ids in allIdss.OrderBy(x => x.FullName))
         {
-            logger?.LogInformation("Auditing file: `{filename}`.", ids.FullName);
             var sgl = ProcessSingleFile(ids, c, logger);
             ret |= sgl;
             tally++;

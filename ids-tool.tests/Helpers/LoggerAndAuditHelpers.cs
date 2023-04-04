@@ -19,7 +19,8 @@ internal static class LoggerAndAuditHelpers
         ILogger logg = GetXunitLogger(OutputHelper);
         var checkResult = Audit.Run(c, logg); // run for xunit output of logging
         checkResult.Should().Be(expectedOutcome);
-
+        if (expectedWarnAndErrors == -1)
+            return;
         var loggerMock = new Mock<ILogger<AuditTests>>();
         Audit.Run(c, loggerMock.Object); // run for testing of log errors and warnings
         CheckErrorsAndWarnings(loggerMock, expectedWarnAndErrors);

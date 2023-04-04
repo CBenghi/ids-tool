@@ -36,9 +36,11 @@ internal class BaseContext
     public BaseContext(XmlReader reader)
     {
         type = reader.LocalName;
-        var li = (IXmlLineInfo)reader;
-        StartLineNumber = li.LineNumber;
-        StartLinePosition = li.LinePosition;
+        if (reader is IXmlLineInfo li)
+        {
+            StartLineNumber = li.LineNumber;
+            StartLinePosition = li.LinePosition;
+        }
     }
 
     /// <summary>
