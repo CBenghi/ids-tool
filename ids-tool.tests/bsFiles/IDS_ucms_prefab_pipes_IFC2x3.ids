@@ -8,7 +8,7 @@
         <ids:milestone>LOD200</ids:milestone>
     </ids:info>
     <ids:specifications>
-        <ids:specification ifcVersion="IFC2X3" name="mounting part" minOccurs="1">
+        <ids:specification ifcVersion="IFC2X3" name="mounting part" maxOccurs="unbounded">
             <ids:applicability>
                 <ids:entity>
                     <ids:name>
@@ -17,7 +17,7 @@
                 </ids:entity>
             </ids:applicability>
             <ids:requirements>
-                <ids:property minOccurs="1" measure="IfcText">
+                <ids:property maxOccurs="unbounded" measure="IfcText">
                     <ids:propertySet>
                         <ids:simpleValue>ePset_Pipe</ids:simpleValue>
                     </ids:propertySet>
@@ -28,202 +28,6 @@
                         <xs:restriction>
                             <xs:enumeration value="cold water"/>
                             <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>material</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="chrome steel 1.4401"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcLengthMeasure">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>pipe diameter</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction base="xs:decimal">
-                            <xs:minInclusive value="0.02"/>
-                            <xs:maxInclusive value="0.06"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>component designation</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="8000.18"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText" uri="https://www.igh.hr/en/reference/">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>numbering system</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="first option"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>Pipe system</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="first option"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-            </ids:requirements>
-        </ids:specification>
-        <ids:specification ifcVersion="IFC2X3" name="pipe fittings and pipes" minOccurs="1">
-            <ids:applicability>
-                <ids:entity>
-                    <ids:name>
-                        <xs:restriction>
-                        <xs:annotation><xs:documentation>This applies to either 'IFCFLOWFITTING' ór 'IFCFLOWSEGMENT'</xs:documentation></xs:annotation>
-                            <xs:pattern value="IFCFLOWFITTING|IFCFLOWSEGMENT"/> 
-                        </xs:restriction>
-                    </ids:name>
-                </ids:entity>
-            </ids:applicability>
-            <ids:requirements>
-                <ids:property minOccurs="1" measure="IfcText" uri="http://identifier.buildingsmart.org/uri/buildingsmart/ifc-4.3/prop/Manufacturer">
-                    <ids:propertySet>
-                        <ids:simpleValue>Pset_ManufacturerTypeInformation</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>Manufacturer</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="Manufacturer 1"/>
-                            <xs:enumeration value="Manufacturer 2"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>medium</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="cold water"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>material</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="chrome steel 1.4401"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcLengthMeasure">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>pipe diameter</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction base="xs:decimal">
-                            <xs:minInclusive value="0.02"/>
-                            <xs:maxInclusive value="0.06"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>component designation</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction>
-                            <xs:enumeration value="arc 45°"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText" uri="https://www.igh.hr/en/reference/">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>numbering system</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction base="xs:string">
-                        <xs:annotation><xs:documentation>Allowed value should be 4 numbers, a dot, and two numbers again. For example '1111.11', '1232.23', etc. are valid. Invalid are '234.12', '2134.2', '23O2.34' (the O is an o not a 0).</xs:documentation></xs:annotation>
-                            <xs:pattern value="[0-9][0-9][0-9][0-9]\.[0-9][0-9]"/> 
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcText">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>Pipe system</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction base="xs:string">
-                            <xs:enumeration value="first option"/>
-                            <xs:enumeration value="something else"/>
-                        </xs:restriction>
-                    </ids:value>
-                </ids:property>
-                <ids:property minOccurs="1" measure="IfcLengthMeasure">
-                    <ids:propertySet>
-                        <ids:simpleValue>ePset_Pipe</ids:simpleValue>
-                    </ids:propertySet>
-                    <ids:name>
-                        <ids:simpleValue>outside diameter_general</ids:simpleValue>
-                    </ids:name>
-                    <ids:value>
-                        <xs:restriction base="xs:decimal">
-                            <xs:minInclusive value="0.02"/>
-                            <xs:maxInclusive value="0.06"/>
                         </xs:restriction>
                     </ids:value>
                 </ids:property>

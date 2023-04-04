@@ -5,7 +5,7 @@ namespace IdsLib.IdsSchema.IdsNodes;
 
 internal class IdsSpecification : BaseContext
 {
-    private readonly MinMaxOccurr minMaxOccurr;
+    private readonly MinMaxOccur minMaxOccurr;
     internal readonly IfcSchemaVersions SchemaVersions = IfcSchemaVersions.IfcNoVersion;
 
     private BaseContext? parent;
@@ -24,7 +24,7 @@ internal class IdsSpecification : BaseContext
 
     public IdsSpecification(System.Xml.XmlReader reader, ILogger? logger) : base(reader)
     {
-        minMaxOccurr = new MinMaxOccurr(reader);
+        minMaxOccurr = new MinMaxOccur(reader);
         var vrs = reader.GetAttribute("ifcVersion") ?? string.Empty;
         SchemaVersions = vrs.GetSchemaVersions(this, logger);
     }
@@ -32,7 +32,7 @@ internal class IdsSpecification : BaseContext
     internal protected override Audit.Status PerformAudit(ILogger? logger)
     {
         var ret = Audit.Status.Ok;
-        if (minMaxOccurr.Audit() != Audit.Status.Ok)
+        if (minMaxOccurr.Audit(out var _) != Audit.Status.Ok)
             ret |= logger.ReportInvalidOccurr(this, minMaxOccurr);
         if (SchemaVersions == IfcSchemaVersions.IfcNoVersion)
             ret |= logger.ReportInvalidSchemaVersion(SchemaVersions, this);

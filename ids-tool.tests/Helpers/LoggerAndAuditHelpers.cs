@@ -14,16 +14,18 @@ namespace idsTool.tests.Helpers;
 
 internal static class LoggerAndAuditHelpers
 {
-    internal static void AuditWithOptions(AuditOptions c, ITestOutputHelper OutputHelper, Audit.Status expectedOutcome = Audit.Status.Ok, int expectedWarnAndErrors = 0)
+    internal static Audit.Status AuditWithOptions(AuditOptions c, ITestOutputHelper OutputHelper, Audit.Status? expectedOutcome = Audit.Status.Ok, int expectedWarnAndErrors = 0)
     {
         ILogger logg = GetXunitLogger(OutputHelper);
         var checkResult = Audit.Run(c, logg); // run for xunit output of logging
-        checkResult.Should().Be(expectedOutcome);
+        if (expectedOutcome.HasValue)
+            checkResult.Should().Be(expectedOutcome.Value);
         if (expectedWarnAndErrors == -1)
-            return;
+            return checkResult;
         var loggerMock = new Mock<ILogger<AuditTests>>();
         Audit.Run(c, loggerMock.Object); // run for testing of log errors and warnings
         CheckErrorsAndWarnings(loggerMock, expectedWarnAndErrors);
+        return checkResult;
     }
 
     private static void CheckErrorsAndWarnings(Mock<ILogger<AuditTests>> loggerMock, int expectedErrCount)

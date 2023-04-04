@@ -6,7 +6,7 @@
 		<ids:date>2021-09-17</ids:date>
 	</ids:info>
 	<ids:specifications>
-		<ids:specification ifcVersion="IFC2X3 IFC4" name="binder" minOccurs="1">
+		<ids:specification ifcVersion="IFC2X3 IFC4" name="binder" maxOccurs="unbounded">
 			<ids:applicability>
 				<ids:entity>
 					<ids:name>

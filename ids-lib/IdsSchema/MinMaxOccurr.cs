@@ -3,7 +3,7 @@ using System.Xml;
 
 namespace IdsLib.IdsSchema;
 
-internal class MinMaxOccurr
+internal class MinMaxOccur
 {
     private readonly string minString;
     private readonly string maxString;
@@ -13,31 +13,48 @@ internal class MinMaxOccurr
         return $"[{minString}..{maxString}]";
     }
 
-    public MinMaxOccurr(XmlReader reader)
+    public MinMaxOccur(XmlReader reader)
     {
-        // both default to "1" when not specified.
+        // both default to "1" according to xml:xs specifications
         minString = reader.GetAttribute("minOccurs") ?? "1"; 
         maxString = reader.GetAttribute("maxOccurs") ?? "1"; 
     }
 
-    internal Audit.Status Audit()
+    /// <summary>
+    /// Audits the validity of an occurrence setting.
+    /// </summary>
+    /// <param name="errorMessage">if invalid returns an errors string without punctuation.</param>
+    /// <returns>the evaluated status</returns>
+    internal Audit.Status Audit(out string errorMessage)
     {
-        try
+        uint max;
+        if (maxString == "unbounded")
+            max = uint.MaxValue;
+        else if (!uint.TryParse(maxString, out max))
         {
-            var max = maxString switch
-            {
-                "unbounded" => int.MaxValue,
-                _ => int.Parse(maxString)
-            };
-            if (!int.TryParse(minString, out var min))
-                return IdsLib.Audit.Status.IdsContentError;
-            return (min <= max)
-                ? IdsLib.Audit.Status.Ok
-                : IdsLib.Audit.Status.IdsContentError;
-        }
-        catch (Exception)
-        {
+            errorMessage = $"Invalid maxOccurs '{maxString}'";
             return IdsLib.Audit.Status.IdsContentError;
         }
+        if (!uint.TryParse(minString, out var min))
+        {
+            errorMessage = $"Invalid minOccurs '{minString}'";
+            return IdsLib.Audit.Status.IdsContentError;
+        }
+        if (max < min)
+        {
+            errorMessage = $"Invalid range '{minString}' to `{maxString}`";
+            return IdsLib.Audit.Status.IdsContentError;
+        }
+        if (
+            min > 1 ||
+            (max != 0 && max != uint.MaxValue)
+            )
+        {
+            errorMessage = $"Invalid configuration for IDS implementation agreements {this}";
+            return IdsLib.Audit.Status.IdsContentError;
+        }
+
+        errorMessage = string.Empty;
+        return IdsLib.Audit.Status.Ok;
     }
 }

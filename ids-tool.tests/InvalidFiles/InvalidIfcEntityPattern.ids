@@ -6,7 +6,7 @@
 		<ids:date>2021-09-17</ids:date>
 	</ids:info>
 	<ids:specifications>
-		<ids:specification ifcVersion="IFC2X3" name="binder" minOccurs="1">
+		<ids:specification ifcVersion="IFC2X3" name="binder" maxOccurs="unbounded">
 			<ids:applicability>
 				<ids:entity>
 					<ids:name>
@@ -21,7 +21,7 @@
 				</ids:entity>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:property minOccurs="1" measure="IfcText">
+				<ids:property maxOccurs="unbounded" measure="IfcText">
 					<ids:propertySet>
 						<xs:restriction>
 							<xs:pattern value="anas.*"/>
@@ -36,7 +36,7 @@
 				</ids:property>
 			</ids:requirements>
 		</ids:specification>
-		<ids:specification ifcVersion="IFC2X3" name="binder2" minOccurs="1">
+		<ids:specification ifcVersion="IFC2X3" name="binder2" maxOccurs="unbounded">
 			<ids:applicability>
 				<ids:attribute>
 					<ids:name>
@@ -48,7 +48,7 @@
 				</ids:attribute>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:attribute>
+				<ids:attribute maxOccurs="unbounded">
 					<ids:name>
 						<xs:restriction>
 							<!-- this is a valid pattern that matches-->
@@ -56,7 +56,7 @@
 						</xs:restriction>
 					</ids:name>
 				</ids:attribute>
-				<ids:attribute>
+				<ids:attribute maxOccurs="unbounded">
 					<ids:name>
 						<xs:restriction>
 							<!-- this is a valid pattern that does not match-->
@@ -64,7 +64,7 @@
 						</xs:restriction>
 					</ids:name>
 				</ids:attribute>
-				<ids:attribute>
+				<ids:attribute maxOccurs="unbounded">
 					<ids:name>
 						<xs:restriction>
 							<!-- this is a valid enumeration  -->

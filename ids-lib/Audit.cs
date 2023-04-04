@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using IdsLib.IdsSchema;
 using System.Diagnostics;
 using IdsLib.IdsSchema.IdsNodes;
+using System.Collections.Concurrent;
 
 namespace IdsLib;
 
@@ -200,8 +201,6 @@ public static partial class Audit
         return c.Status | contentStatus;
     }
 
-    
-
     private static XmlReaderSettings? GetSchemaSettings(IdsVersion vrs, ILogger? logger)
     {
         var rSettings = new XmlReaderSettings();
@@ -216,8 +215,6 @@ public static partial class Audit
         return rSettings;
     }
 
-    
-
     private static XmlReaderSettings GetSchemaSettings(IEnumerable<string> diskSchemas, ILogger? logger)
     {
         var rSettings = new XmlReaderSettings();
@@ -229,7 +226,7 @@ public static partial class Audit
         return rSettings;
     }
 
-    static readonly Dictionary<string, string> NameSpaces = new();
+    static readonly ConcurrentDictionary<string, string> NameSpaces = new();
 
     private static string GetSchemaNamespace(FileInfo schemaFile)
     {
@@ -244,7 +241,7 @@ public static partial class Audit
         {
             tns = m.Groups["tns"].Value;
         }
-        NameSpaces.Add(schemaFile.FullName, tns);
+        NameSpaces.TryAdd(schemaFile.FullName, tns);
         return tns;
     }
 
@@ -325,11 +322,11 @@ public static partial class Audit
         }
     }
 
-    private static IEnumerable<FileInfo> GetSchemaFiles(IEnumerable<string> diskFiles, ILogger? logger)
+    private static IEnumerable<FileInfo> GetSchemaFiles(IEnumerable<string> userDiskFiles, ILogger? logger)
     {
         var resourceList = new List<string> { "xsdschema.xsd", "xml.xsd" };
         List<string> saved = ExtractResources(resourceList, logger);
-        foreach (var item in diskFiles.Union(saved))
+        foreach (var item in userDiskFiles.Union(saved))
         {
             var f = new FileInfo(item);
             if (f.Exists)
@@ -337,28 +334,43 @@ public static partial class Audit
         }
     }
 
-    private static List<string> ExtractResources(IEnumerable<string> resources, ILogger? logger)
+    private static readonly ConcurrentDictionary<string, string> resourceToFile = new();
+
+    private static List<string> ExtractResources(IEnumerable<string> resourcesIdentifiers, ILogger? logger)
     {
         // get the resources
-        var saved = new List<string>();
+        var resolvedFiles = new List<string>();
         var assembly = Assembly.GetExecutingAssembly();
-        foreach (var resourceSchema in resources)
+        foreach (var resourceIdentifier in resourcesIdentifiers)
         {
-            string resourceName = assembly.GetManifestResourceNames()
-            .Single(str => str.EndsWith(resourceSchema));
-            using var stream = assembly.GetManifestResourceStream(resourceName);
-            if (stream == null)
+            if (resourceToFile.TryGetValue(resourceIdentifier, out var file))
             {
-                logger?.LogError("Error extracting resource: {schema}", resourceSchema);
-                continue;
+                resolvedFiles.Add(file);
             }
-            using var reader = new StreamReader(stream);
-            string result = reader.ReadToEnd();
-            var tempFile = Path.GetTempFileName();
-            File.WriteAllText(tempFile, result);
-            saved.Add(tempFile);
+            else
+            {
+                string resourceName = assembly.GetManifestResourceNames()
+                    .Single(str => str.EndsWith(resourceIdentifier));
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                if (stream == null)
+                {
+                    logger?.LogError("Error extracting resource: {schema}", resourceIdentifier);
+                    continue;
+                }
+                using var reader = new StreamReader(stream);
+                string result = reader.ReadToEnd();
+                var tempFile = Path.GetTempFileName();
+                File.WriteAllText(tempFile, result);
+                
+                // try to add, if cannot be done, get it from the dic,
+                // it must have been added in the meanwhile to the static dictionary
+                //
+                if (resourceToFile.TryAdd(resourceIdentifier, tempFile))
+                    resolvedFiles.Add(tempFile);
+                else
+                    resolvedFiles.Add(resourceToFile[resourceIdentifier]);
+            }
         }
-
-        return saved;
+        return resolvedFiles;
     }
 }

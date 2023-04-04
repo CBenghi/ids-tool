@@ -8,7 +8,7 @@
 		<ids:title/>
 	</ids:info>
 	<ids:specifications>
-		<ids:specification ifcVersion="IFC4" name="Specification #1" minOccurs="0">
+		<ids:specification ifcVersion="IFC4" name="Specification #1" maxOccurs="unbounded">
 			<ids:applicability>
 				<ids:entity>
 					<ids:name>

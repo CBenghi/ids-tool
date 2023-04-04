@@ -6,7 +6,7 @@
     <ids:date>2021-09-17</ids:date>
   </ids:info>
   <ids:specifications>
-    <ids:specification ifcVersion="IFC2X3 INVALIDIFCVERSION" name="binder" minOccurs="1">
+    <ids:specification ifcVersion="IFC2X3 INVALIDIFCVERSION" name="binder" maxOccurs="unbounded">
       <ids:applicability>
         <ids:entity>
           <ids:name>
@@ -20,7 +20,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:property minOccurs="1" measure="IfcText">
+        <ids:property maxOccurs="unbounded" measure="IfcText">
           <ids:propertySet>
             <xs:restriction>
               <xs:pattern value="anas.*"/>

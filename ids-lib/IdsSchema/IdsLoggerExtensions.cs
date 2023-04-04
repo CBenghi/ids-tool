@@ -11,9 +11,10 @@ internal static class IdsLoggerExtensions
         logger?.LogCritical("Unhandled scenario: {message} on `{tp}` at line {line}, position {pos}.", scenarioMessage, context.type, context.StartLineNumber, context.StartLinePosition);
         return Audit.Status.NotImplementedError;
     }
-    internal static Audit.Status ReportInvalidOccurr(this ILogger? logger, BaseContext context, MinMaxOccurr minMax) 
+    internal static Audit.Status ReportInvalidOccurr(this ILogger? logger, BaseContext context, MinMaxOccur minMax) 
     {
-        logger?.LogError("Invalid occurrence {minMax} on `{tp}` at line {line}, position {pos}.", minMax, context.type, context.StartLineNumber, context.StartLinePosition);
+        minMax.Audit(out var occurError);
+        logger?.LogError("Invalid occurrence on `{tp}` at line {line}, position {pos}. {occurError}.", context.type, context.StartLineNumber, context.StartLinePosition, occurError);
         return Audit.Status.IdsContentError;
     }
 

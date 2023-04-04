@@ -70,7 +70,7 @@ We are planning to a number of audits (checked ones are implemented)
 - [ ] IFC Schema check (individual facets)
   - [x] Cleanup of old auditing logic (based on pure xml)
   - [x] IfcEntity
-    - [ ] Predefined types
+    - [x] Predefined types
       - [x] Predefined types Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
       - [x] Prefefined types are tested against values provided from the schema.
       - [x] Meaningful test cases
@@ -91,17 +91,16 @@ We are planning to a number of audits (checked ones are implemented)
       - [ ] Includes IFC type inheritance
     - [ ] Pset name validity -> No custom "PSET_*"
     - [ ] Measures
+        - [ ] If a value is provided then it needs to be checked
   - [x] Cardinality for facets (in requirements)
     - [x] partOf
     - [x] classification
     - [x] attribute
     - [x] property
-    - [x] material
-- [ ] Measures
-  - [ ] optional but if a value is provided then it needs to be checked
+    - [x] material  
 - [ ] DoorLiningProperties - discuss requirements
+- [x] Cardinality
+  - [x] Min and Max values are intrinsically valid (xml constraints)
+  - [x] Min and Max values are restricted to agreed patterns (ids implementation agreement)
 - [ ] Specification checks 
   - [ ] Coherence between applicability and requirements
-  - [ ] Cardinality
-    - [x] Min and Max values are intrinsically valid
-    - [ ] Min and Max values are restricted to agreed patterns
