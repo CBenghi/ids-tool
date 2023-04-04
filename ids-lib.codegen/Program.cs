@@ -11,6 +11,10 @@ internal class Program
         var dest = Path.Combine(destPath.FullName, @"ids-lib\IfcSchema\SchemaInfo.ClassAndAttributeNames.g.cs");
         File.WriteAllText(dest, tmp);
 
+        tmp = IfcSchema_MeasureNamesGenerator.Execute();
+        dest = Path.Combine(destPath.FullName, @"ids-lib\IfcSchema\SchemaInfo.MeasureNames.g.cs");
+        File.WriteAllText(dest, tmp);
+
         tmp = IfcSchema_ClassGenerator.Execute();
         dest = Path.Combine(destPath.FullName, @"ids-lib\IfcSchema\SchemaInfo.Schemas.g.cs");
         File.WriteAllText(dest, tmp);

@@ -12,4 +12,9 @@
     <PackageReference Include="Xbim.Essentials" Version="5.9.408-develop" />
     <PackageReference Include="Xbim.Properties" Version="6.0.10" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="buildingSMART\units.md">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
