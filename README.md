@@ -68,7 +68,6 @@ We are planning to a number of audits (checked ones are implemented)
   - [x] Use Xsd from disk
   - [x] Use relevant Xsd from resource
 - [ ] IFC Schema check (individual facets)
-  - [x] Cleanup of old auditing logic (based on pure xml)
   - [x] IfcEntity
     - [x] Predefined types
       - [x] Predefined types Names are hardcoded in the library (Ifc2x3, Ifc4, Ifc4x3)
@@ -86,24 +85,34 @@ We are planning to a number of audits (checked ones are implemented)
       - [x] More complex case of type match need to be audited
         - [x] Regex matches
         - [x] Multiple values allowed	
-  - [ ] PSets 
-    - [ ] Standard PSet Names for types
-      - [ ] Includes IFC type inheritance
-    - [ ] Pset name validity -> No custom "PSET_*"
+  - [ ] properties 
+    - [ ] All audits are case insensitive
+    - [ ] no extensions of standard PSETs
+       - [ ] properties are limited to the agreed set
+    - [ ] No misplacement of propertis
+      - [ ] Property with a recognised name (e.g. IsExternal) should not be outside of the agreed pset.
+        - [ ] Perhaps return a warning for userdefined property
+        - [ ] Warning or error as configuration (strict)
+      - [ ] Includes IFC type inheritance?
+    - [ ] Reserved prefix
+      - [ ] No custom pset can start with "PSET_" this prefix is reserved for the standard
     - [ ] Measures
-        - [x] If a value is provided then it needs to be checked
-        - [x] Test cases added
-        - [ ] Discuss with IDS group: clarify the list of valid measures 
-        - [ ] Discuss with IDS group: clarify the case sensitivity logic (currently PascalCase based on Development files)
+      - [x] If a value is provided then it needs to be checked
+      - [x] Test cases added
+      - [ ] Discuss with IDS group: clarify the list of valid measures 
+      - [ ] Discuss with IDS group: clarify the case sensitivity logic (currently PascalCase based on Development files)
   - [x] Cardinality for facets (in requirements)
     - [x] partOf
     - [x] classification
-    - [x] attribute
     - [x] property
     - [x] material  
-- [ ] DoorLiningProperties - discuss requirements
+  - [ ] PartOf
+    - [ ] Relation
 - [x] Cardinality
   - [x] Min and Max values are intrinsically valid (xml constraints)
   - [x] Min and Max values are restricted to agreed patterns (IDS implementation agreement)
-- [ ] Specification checks 
+- [ ] Specification audit 
   - [ ] Coherence between applicability and requirements
+    - [ ] Property sets for types defined in the applicability
+    - [ ] Inconsistenty types between applicability and requirements
+

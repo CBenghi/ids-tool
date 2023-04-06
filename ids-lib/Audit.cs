@@ -301,7 +301,15 @@ public static partial class Audit
         return ret;
     }
 
-    private static IEnumerable<FileInfo> GetSchemaFiles(IdsVersion vrs, ILogger? logger)
+    public static FileInfo? GetLatestIdsSchema()
+    {
+        var file = ExtractResources(new[] {"ids.xsd"}).FirstOrDefault();
+        if (file is null)
+            return null;
+        return new FileInfo(file);
+    }
+
+    private static IEnumerable<FileInfo> GetSchemaFiles(IdsVersion vrs, ILogger? logger = null)
     {
         List<string> resourceList;
         switch (vrs)
@@ -336,7 +344,7 @@ public static partial class Audit
 
     private static readonly ConcurrentDictionary<string, string> resourceToFile = new();
 
-    private static List<string> ExtractResources(IEnumerable<string> resourcesIdentifiers, ILogger? logger)
+    private static List<string> ExtractResources(IEnumerable<string> resourcesIdentifiers, ILogger? logger = null)
     {
         // get the resources
         var resolvedFiles = new List<string>();

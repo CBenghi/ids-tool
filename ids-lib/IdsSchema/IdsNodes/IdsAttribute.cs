@@ -8,10 +8,10 @@ namespace IdsLib.IdsSchema.IdsNodes;
 internal class IdsAttribute : BaseContext, IIdsRequirementFacet
 {
     private static readonly string[] SpecificationArray = { "specification" };
-    private readonly MinMaxOccur minMaxOccurr;
+    
     public IdsAttribute(System.Xml.XmlReader reader) : base(reader)
     {
-        minMaxOccurr = new MinMaxOccur(reader);
+        
     }
 
     internal protected override Audit.Status PerformAudit(ILogger? logger)
@@ -48,8 +48,6 @@ internal class IdsAttribute : BaseContext, IIdsRequirementFacet
 
     public Audit.Status PerformAuditAsRequirement(ILogger? logger)
     {
-        if (minMaxOccurr.Audit(out var _) != Audit.Status.Ok)
-            return logger.ReportInvalidOccurr(this, minMaxOccurr);
         return Audit.Status.Ok;
     }
 }

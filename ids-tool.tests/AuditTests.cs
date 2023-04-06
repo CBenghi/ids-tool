@@ -52,7 +52,7 @@ public class AuditTests : BuildingSmartRepoFiles
 
     [Theory]
     [InlineData("InvalidFiles/InvalidIfcVersion.ids", 2, Audit.Status.IdsStructureError)]
-    [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 7, Audit.Status.IdsContentError)]
+    [InlineData("InvalidFiles/InvalidIfcOccurs.ids", 6, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidEntityNames.ids", 3, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidAttributeNames.ids", 2, Audit.Status.IdsContentError)]
     [InlineData("InvalidFiles/InvalidIfcEntityPattern.ids", 4, Audit.Status.IdsContentError)]

@@ -16,7 +16,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <ids:simpleValue>Name</ids:simpleValue>
           </ids:name>
@@ -33,7 +33,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <ids:simpleValue>Name</ids:simpleValue>
           </ids:name>
@@ -50,7 +50,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <ids:simpleValue>Name</ids:simpleValue>
           </ids:name>
@@ -67,7 +67,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <ids:simpleValue>Name</ids:simpleValue>
           </ids:name>

@@ -9,6 +9,9 @@ namespace idsTool.tests;
 
 public class SchemaLoadingTests : BuildingSmartRepoFiles
 {
+    /// <summary>
+    /// In case this test fails, see <see cref="AuditTests.FullAuditOfDevelopmentFilesOk"/> for issues in the file.
+    /// </summary>
     [Theory]
     [MemberData(nameof(GetDevelopmentIdsFiles))]
     public void CanLoadEmbeddedResourceSchema(string idsFile)

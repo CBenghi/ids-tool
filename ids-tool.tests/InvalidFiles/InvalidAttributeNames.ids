@@ -16,7 +16,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <ids:simpleValue>InvalidName</ids:simpleValue>
           </ids:name>
@@ -33,7 +33,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <!-- valid in ifc2x3 -->
             <ids:simpleValue>ActionID</ids:simpleValue>
@@ -51,7 +51,7 @@
         </ids:entity>
       </ids:applicability>
       <ids:requirements>
-        <ids:attribute maxOccurs="unbounded">
+        <ids:attribute>
           <ids:name>
             <!-- not valid in ifc4 -->
             <ids:simpleValue>ActionID</ids:simpleValue>

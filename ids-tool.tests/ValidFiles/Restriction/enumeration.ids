@@ -20,7 +20,7 @@
 				</ids:entity>
 			</ids:applicability>
 			<ids:requirements>
-				<ids:attribute minOccurs="1" maxOccurs="unbounded">
+				<ids:attribute>
 					<ids:name>
 						<ids:simpleValue>Name</ids:simpleValue>
 					</ids:name>

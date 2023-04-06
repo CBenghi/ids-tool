@@ -34,12 +34,6 @@
 						<ids:simpleValue>yes</ids:simpleValue>
 					</ids:value>
 				</ids:property>
-				<!-- Ensure test for attribute facets -->
-				<ids:attribute minOccurs="4" maxOccurs="2">
-					<ids:name>
-						<ids:simpleValue>Name</ids:simpleValue>
-					</ids:name>
-				</ids:attribute>
 				<!-- Ensure test for classification facets -->
 				<ids:classification minOccurs="4" maxOccurs="2">
 					<ids:system>
